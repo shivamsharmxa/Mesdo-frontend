@@ -4,6 +4,7 @@ import Applicants from "../components/JobCard/Applicants";
 import UserDashboard from "../pages/UserSide/UserSide";
 import CreateJob from "../pages/CreateJob/CreateJob";
 import { ApplicantDetails } from "../components/JobCard/ApplicantDetails";
+import UploadResume from "../pages/onboarding/UploadResume";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
       <Route path="/usermode" element={<UserDashboard />} />
       <Route path="/create" element={<CreateJob />} />
       <Route path="/applicant/:id" element={<ApplicantDetails />} />
+      <Route path="/onBoarding/resume" element={<UploadResume />} />
     </Routes>
   );
 };
