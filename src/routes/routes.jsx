@@ -6,6 +6,7 @@ import CreateJob from "../pages/CreateJob/CreateJob";
 import { ApplicantDetails } from "../components/JobCard/ApplicantDetails";
 import UploadResume from "../pages/onboarding/UploadResume";
 import PersonalInformation from "../pages/onboarding/PersonalInformation";
+import ProfessionalSummary from "../pages/onboarding/ProfessionalSummary";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/applicant/:id" element={<ApplicantDetails />} />
       <Route path="/onBoarding/resume" element={<UploadResume />} />
       <Route path="/personalInformation" element={<PersonalInformation />} />
+      <Route path="/professionalSummary" element={<ProfessionalSummary />} />
     </Routes>
   );
 };
