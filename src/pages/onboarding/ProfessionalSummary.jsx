@@ -31,7 +31,7 @@ const ProfessionalSummary = () => {
             <input
               type="text"
               placeholder="Enter designation"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-30 px-3 py-2 text-gray-700 text-sm focus:outline-none"
             />
           </div>
 
@@ -43,7 +43,7 @@ const ProfessionalSummary = () => {
             <input
               type="text"
               placeholder="Enter tagline"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-30 px-3 py-2 text-gray-700 text-sm focus:outline-none"
             />
           </div>
 
@@ -54,7 +54,7 @@ const ProfessionalSummary = () => {
             </label>
             <textarea
               placeholder="About you.."
-              className="mt-1 block w-full h-50 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none resize-none"
+              className="mt-1 block w-full h-50 rounded-md border border-gray-300 bg-gray-30 px-3 py-2 text-gray-700 text-sm focus:outline-none resize-none"
             ></textarea>
           </div>
         </div>
@@ -64,7 +64,10 @@ const ProfessionalSummary = () => {
           <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition">
             Skip
           </button>
-          <button className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition">
+          <button
+            onClick={() => navigate("/Qualification")}
+            className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition"
+          >
             Continue
           </button>
         </div>
