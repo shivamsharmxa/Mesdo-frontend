@@ -10,6 +10,7 @@ import ProfessionalSummary from "../pages/onboarding/ProfessionalSummary";
 import Qualification from "../pages/onboarding/Qualification";
 import WorkExperience from "../pages/onboarding/WorkExperience";
 import SkillsSpecialization from "../pages/onboarding/SkillsSpecialization";
+import Achievement from "../pages/onboarding/Achievement";
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const AppRoutes = () => {
       <Route path="/Qualification" element={<Qualification />} />
       <Route path="/WorkExperience" element={<WorkExperience />} />
       <Route path="/SkillsSpecialization" element={<SkillsSpecialization />} />
+      <Route path="/Achievement" element={<Achievement />} />
     </Routes>
   );
 };
