@@ -6,6 +6,26 @@ import axios from "axios";
 const WorkExperience = () => {
   const navigate = useNavigate();
   const [universities, setUniversities] = useState([]);
+  const [formData, setFormData] = useState({
+    jobTitle: "",
+    hospital: "",
+    industry: "",
+    department: "",
+    employmentType: "",
+    jobType: "",
+    timePeriod: "",
+    location: "",
+    skills: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleContinue = () => {
+    navigate("/WorkExperience-preview", { state: { formData } });
+  };
 
   useEffect(() => {
     axios.get("https://example.com/api/universities").then((response) => {
@@ -38,6 +58,9 @@ const WorkExperience = () => {
                   Job Title*
                 </label>
                 <input
+                  name="jobTitle"
+                  value={formData.jobTitle}
+                  onChange={handleChange}
                   type="text"
                   className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                   placeholder="Enter job title"
@@ -49,6 +72,9 @@ const WorkExperience = () => {
                   Hospital/Clinic*
                 </label>
                 <input
+                  name="hospital"
+                  value={formData.hospital}
+                  onChange={handleChange}
                   type="text"
                   className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                   placeholder="Enter hospital/clinic"
@@ -62,7 +88,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Industry
                 </label>
-                <select className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleChange}
+                  className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>Medical</option>
                   <option>IT</option>
@@ -75,7 +106,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Department
                 </label>
-                <select className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>HR</option>
                   <option>Finance</option>
@@ -91,7 +127,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Employment Type
                 </label>
-                <select className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="employmentType"
+                  value={formData.employmentType}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>Full-Time</option>
                   <option>Part-Time</option>
@@ -103,7 +144,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Job Type
                 </label>
-                <select className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="jobType"
+                  value={formData.jobType}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>Permanent</option>
                   <option>Temporary</option>
@@ -117,7 +163,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Time Period
                 </label>
-                <select className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="timePeriod"
+                  value={formData.timePeriod}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>Less than 6 months</option>
                   <option>1 Year</option>
@@ -130,7 +181,12 @@ const WorkExperience = () => {
                 <label className="block text-sm font-small text-gray-900">
                   Location
                 </label>
-                <select className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none">
+                <select
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                >
                   <option>Select</option>
                   <option>Mumbai</option>
                   <option>Delhi</option>
@@ -145,6 +201,9 @@ const WorkExperience = () => {
                 Skills*
               </label>
               <input
+                name="skills"
+                value={formData.skills}
+                onChange={handleChange}
                 type="text"
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 placeholder="Enter your skills"
@@ -156,6 +215,9 @@ const WorkExperience = () => {
                 Description*
               </label>
               <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
                 className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 rows="2"
                 placeholder="Enter a brief description"
@@ -167,7 +229,10 @@ const WorkExperience = () => {
               <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition">
                 Skip
               </button>
-              <button className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition">
+              <button
+                onClick={handleContinue}
+                className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition"
+              >
                 Continue
               </button>
             </div>

@@ -11,6 +11,11 @@ import Qualification from "../pages/onboarding/Qualification";
 import WorkExperience from "../pages/onboarding/WorkExperience";
 import SkillsSpecialization from "../pages/onboarding/SkillsSpecialization";
 import Achievement from "../pages/onboarding/Achievement";
+import QualificationPreview from "../pages/onboarding/QualificationPreview";
+import WorkPreview from "../pages/onboarding/WorkPreview";
+import AchievementPreview from "../pages/onboarding/AchievementPreview";
+import MainPage from "../pages/auth/MainPage";
+import SignUp from "../pages/auth/SIgnUp";
 
 const AppRoutes = () => {
   return (
@@ -27,6 +32,11 @@ const AppRoutes = () => {
       <Route path="/WorkExperience" element={<WorkExperience />} />
       <Route path="/SkillsSpecialization" element={<SkillsSpecialization />} />
       <Route path="/Achievement" element={<Achievement />} />
+      <Route path="/qualification-preview" element={<QualificationPreview />} />
+      <Route path="/WorkExperience-preview" element={<WorkPreview />} />
+      <Route path="/Achievement-preview" element={<AchievementPreview />} />
+      <Route path="/MainPage" element={<MainPage />} />
+      <Route path="/SignUp" element={<SignUp />} />
     </Routes>
   );
 };

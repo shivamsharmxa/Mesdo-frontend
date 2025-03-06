@@ -6,12 +6,26 @@ import axios from "axios";
 const Achievement = () => {
   const navigate = useNavigate();
   const [universities, setUniversities] = useState([]);
+  const [formData, setFormData] = useState({
+    award: "",
+    issuer: "",
+    year: "",
+    description: "",
+  });
 
   useEffect(() => {
     axios.get("https://example.com/api/universities").then((response) => {
       setUniversities(response.data);
     });
   }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleContinue = () => {
+    navigate("/Achievement-preview", { state: { formData } });
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -33,6 +47,9 @@ const Achievement = () => {
           <div>
             <label className="block text-gray-700 text-sm mb-2">Award</label>
             <input
+              name="award"
+              value={formData.award}
+              onChange={handleChange}
               type="text"
               placeholder="Award Name"
               className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
@@ -45,6 +62,9 @@ const Achievement = () => {
               <div className="w-1/2">
                 <label className="block text-sm text-gray-900">Issuer</label>
                 <input
+                  name="issuer"
+                  value={formData.issuer}
+                  onChange={handleChange}
                   type="text"
                   placeholder="Issuer Name"
                   className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
@@ -53,7 +73,12 @@ const Achievement = () => {
 
               <div className="w-1/2">
                 <label className="block text-sm text-gray-900">Year</label>
-                <select className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3">
+                <select
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
+                >
                   <option>Select</option>
                   {Array.from({ length: 10 }, (_, i) => (
                     <option key={i}>{2025 - i}</option>
@@ -68,6 +93,9 @@ const Achievement = () => {
                 Description*
               </label>
               <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
                 className="block w-full h-32 rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 placeholder="Enter a brief description"
               ></textarea>
@@ -84,7 +112,10 @@ const Achievement = () => {
               <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm rounded-md hover:bg-gray-400 transition">
                 Skip
               </button>
-              <button className="w-[120px] h-[40px] bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition">
+              <button
+                onClick={handleContinue}
+                className="w-[120px] h-[40px] bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition"
+              >
                 Continue
               </button>
             </div>
