@@ -2,34 +2,10 @@ import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import signUp from "../../assets/SignUp.png";
 
-const SignUp = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
-
-  const getPasswordStrength = (password) => {
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
-    return strength;
-  };
-
-  const strengthLabels = [
-    "Very Weak",
-    "Weak",
-    "Moderate",
-    "Strong",
-    "Very Strong",
-  ];
-  const strengthColors = [
-    "bg-[#DD4963]",
-    "bg-[#FF9A40]",
-    "bg-[#F2E03E]",
-    "bg-[#B6E949]",
-    "bg-[#48C61C]",
-  ];
 
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
@@ -52,8 +28,6 @@ const SignUp = () => {
 
     if (!password) {
       newErrors.password = "Password is required.";
-    } else if (password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters.";
     }
 
     setErrors(newErrors);
@@ -75,8 +49,8 @@ const SignUp = () => {
 
       <div className="w-full md:w-1/2 flex items-center justify-center px-8">
         <div className="max-w-md w-full">
-          <h2 className="text-[#DB4E82] font-bold text-sm">START FOR FREE</h2>
-          <h1 className="text-3xl font-bold mt-2">Create new account.</h1>
+          <h2 className="text-[#DB4E82] font-bold text-sm">Hey!</h2>
+          <h1 className="text-3xl font-bold mt-2">Welcome Back</h1>
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
@@ -99,13 +73,13 @@ const SignUp = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Create a password <span className="text-red-500">*</span>
+                Password <span className="text-red-500">*</span>
               </label>
               <input
                 className={`mt-1 block w-full px-4 py-3 border rounded-sm shadow-sm focus:outline-none ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 } text-gray-900 bg-gray-100`}
-                placeholder="At least 8 characters"
+                placeholder="Enter Your Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -115,43 +89,23 @@ const SignUp = () => {
               )}
             </div>
 
-            {/* Password Strength Bar (Always Visible) */}
-            <div className="mt-2">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1 flex-1 rounded-md ${
-                      index < getPasswordStrength(password) + 1
-                        ? strengthColors[getPasswordStrength(password)]
-                        : "bg-gray-200"
-                    }`}
-                  ></div>
-                ))}
-              </div>
-              <p
-                className={`text-sm mt-1 font-small ${strengthColors[
-                  getPasswordStrength(password)
-                ].replace("bg", "text")}`}
-              >
-                {strengthLabels[getPasswordStrength(password)]}
-              </p>
-            </div>
-
             <button
               className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white bg-[#1890FF] hover:bg-blue-700"
               type="submit"
             >
-              Sign Up
+              Log in
             </button>
           </form>
 
-          <p className="mt-3 ml-70 text-sm text-gray-600 text-center">
-            Already a Member?{" "}
-            <a className="text-blue-500 font-semibold" href="#">
-              Login
+          <div className="mt-3 flex justify-between text-sm text-gray-600">
+            <a className="text-[#5A6FE4] font-small" href="#">
+              Forget password
             </a>
-          </p>
+            <a className="text-gray-600 font-small" href="#">
+              Don&apos;t have an account?{" "}
+              <span className="text-blue-500 text-small">Sign up</span>
+            </a>
+          </div>
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
@@ -172,4 +126,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;

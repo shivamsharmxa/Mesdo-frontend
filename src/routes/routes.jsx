@@ -16,6 +16,9 @@ import WorkPreview from "../pages/onboarding/WorkPreview";
 import AchievementPreview from "../pages/onboarding/AchievementPreview";
 import MainPage from "../pages/auth/MainPage";
 import SignUp from "../pages/auth/SIgnUp";
+import Login from "../pages/auth/Login";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import ChangePassword from "../pages/auth/ChangePassword";
 
 const AppRoutes = () => {
   return (
@@ -37,6 +40,9 @@ const AppRoutes = () => {
       <Route path="/Achievement-preview" element={<AchievementPreview />} />
       <Route path="/MainPage" element={<MainPage />} />
       <Route path="/SignUp" element={<SignUp />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/ForgetPassword" element={<ForgetPassword />} />
+      <Route path="/ChangePassword" element={<ChangePassword />} />
     </Routes>
   );
 };

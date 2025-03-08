@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
@@ -34,143 +34,122 @@ const Qualification = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleContinue = () => {
-    navigate("/qualification-preview", { state: { formData } });
-  };
-
-  // Fetch Universities
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/universities")
-      .then((response) => {
-        console.log("Universities API Response:", response.data);
-        const formattedUniversities = response.data.map((uni) => ({
-          value: uni.name,
-          label: uni.name,
-        }));
-        setUniversities([
-          ...formattedUniversities,
-          { value: "other", label: "Other" },
+    const fetchData = async () => {
+      try {
+        const [uniResponse, qualResponse] = await Promise.all([
+          axios.get("http://localhost:5004/universities"),
+          axios.get("http://localhost:5004/qualifications"),
         ]);
-      })
-      .catch((error) => {
-        console.error("Error fetching universities:", error);
-      });
+
+        console.log("Qualifications API Response:", qualResponse.data);
+
+        if (uniResponse.data && Array.isArray(uniResponse.data)) {
+          setUniversities(
+            uniResponse.data.map((uni) => ({
+              value: uni.name,
+              label: uni.name,
+            }))
+          );
+        }
+
+        if (qualResponse.data && Array.isArray(qualResponse.data.data)) {
+          const formattedQualifications = qualResponse.data.data.flatMap(
+            (item) =>
+              item.list.map((qual) => ({
+                value: qual,
+                label: qual,
+              }))
+          );
+
+          setQualifications(formattedQualifications);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
   }, []);
 
   // Fetch Qualifications
-  useEffect(() => {
-    const fetchQualifications = async () => {
+
+  const handleSaveUniversity = async () => {
+    if (isOtherSelected && customUniversity.trim() !== "") {
       try {
-        const response = await axios.get(
-          "http://localhost:5001/qualifications"
-        );
-        console.log("Qualifications API Response:", response.data);
-
-        // Fix: Use 'data' (lowercase d)
-        if (response.data && Array.isArray(response.data.data)) {
-          const formattedQualifications = response.data.data.map((item) => ({
-            category: item.category,
-            list: item.list,
-          }));
-
-          setQualifications(formattedQualifications);
-        } else {
-          console.error("Unexpected response format:", response.data);
-        }
+        await axios.post("http://localhost:5004/universities", {
+          name: customUniversity,
+        });
+        setUniversities([
+          ...universities,
+          { value: customUniversity, label: customUniversity },
+        ]);
+        setIsOtherSelected(false);
+        setFormData({ ...formData, university: customUniversity });
       } catch (error) {
-        console.error("Error fetching qualifications:", error);
+        console.error("Error adding university:", error);
       }
-    };
+    }
+  };
+  const handleQualificationChange = (event) => {
+    setFormData({ ...formData, qualification: event.target.value });
+  };
 
-    fetchQualifications();
-  }, []);
+  const handleContinue = () => {
+    if (isOtherSelected) handleSaveUniversity();
+    navigate("/qualification-preview", { state: { formData } });
+  };
 
   return (
     <div className="flex h-screen">
-      {/* Left Side - Form */}
       <div className="w-1/2 p-12">
         <button onClick={() => navigate(-1)} className="mb-6">
           <ArrowLeft size={24} className="text-black" />
         </button>
-
         <h1 className="text-2xl font-semibold text-gray-900">Qualifications</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Include all of your relevant experience and dates in this section.
+          Include all relevant details.
         </p>
-
-        {/* Form */}
         <div className="mt-6 space-y-6">
-          {/* Qualification & University */}
           <div className="flex gap-4">
-            {/* Qualification Dropdown */}
             <div className="w-1/2">
               <label className="block text-sm font-small text-gray-900">
                 Qualification*
               </label>
-              <div className="relative mt-1">
-                <Select
-                  name="qualification"
-                  value={
-                    formData.qualification
-                      ? {
-                          value: formData.qualification,
-                          label: formData.qualification,
-                        }
-                      : null
-                  }
-                  onChange={(selectedOption) =>
-                    setFormData({
-                      ...formData,
-                      qualification: selectedOption.value,
-                    })
-                  }
-                  options={qualifications.flatMap((qual) =>
-                    qual.list.map((q) => ({ value: q, label: q }))
-                  )}
-                  placeholder="Select"
-                  className="w-full text-sm"
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      borderRadius: "0.375rem", // Matches rounded-md
-                      borderColor: "#D1D5DB", // Matches border-gray-300
-                      fontSize: "0.875rem", // Matches text-sm
-                      padding: "2px",
-                    }),
-                  }}
-                />
-
-                <ChevronDown
-                  size={18}
-                  className="absolute right-3 top-3 text-gray-400"
-                />
-              </div>
+              <Select
+                name="qualification"
+                value={
+                  formData.qualification
+                    ? {
+                        value: formData.qualification,
+                        label: formData.qualification,
+                      }
+                    : null
+                }
+                onChange={(selectedOption) =>
+                  setFormData({
+                    ...formData,
+                    qualification: selectedOption.value,
+                  })
+                }
+                options={qualifications}
+                placeholder="Select Qualification"
+                className="w-full text-sm"
+              />
             </div>
-
             <div className="w-1/2">
               <label className="block text-sm font-small text-gray-900">
                 University*
               </label>
-              <div className="relative mt-1">
-                <Select
-                  options={universities}
-                  value={
-                    universities.find(
-                      (uni) => uni.value === formData.university
-                    ) || null
-                  }
-                  onChange={handleUniversityChange}
-                  className="w-full text-sm"
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                  }}
-                  menuPortalTarget={document.body}
-                  menuShouldScrollIntoView={false}
-                  menuPosition="fixed"
-                />
-              </div>
+              <Select
+                options={[...universities, { value: "other", label: "Other" }]}
+                value={
+                  universities.find(
+                    (uni) => uni.value === formData.university
+                  ) || null
+                }
+                onChange={handleUniversityChange}
+                className="w-full text-sm"
+              />
               {isOtherSelected && (
                 <input
                   type="text"
