@@ -19,6 +19,9 @@ import SignUp from "../pages/auth/SIgnUp";
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import ChangePassword from "../pages/auth/ChangePassword";
+import OrganizationInformation from "../pages/Recruiter/onboarding/OrganizationInformation";
+import About from "../pages/Recruiter/onboarding/About";
+import Location from "../pages/Recruiter/onboarding/Location";
 
 const AppRoutes = () => {
   return (
@@ -43,6 +46,12 @@ const AppRoutes = () => {
       <Route path="/Login" element={<Login />} />
       <Route path="/ForgetPassword" element={<ForgetPassword />} />
       <Route path="/ChangePassword" element={<ChangePassword />} />
+      <Route path="/About" element={<About />} />
+      <Route path="/location" element={<Location />} />
+      <Route
+        path="/OrganizationInformation"
+        element={<OrganizationInformation />}
+      />
     </Routes>
   );
 };
