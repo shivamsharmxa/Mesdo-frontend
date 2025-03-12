@@ -22,6 +22,7 @@ import ChangePassword from "../pages/auth/ChangePassword";
 import OrganizationInformation from "../pages/Recruiter/onboarding/OrganizationInformation";
 import About from "../pages/Recruiter/onboarding/About";
 import Location from "../pages/Recruiter/onboarding/Location";
+import Profile from "../pages/UserSide/Profile";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
       <Route path="/ChangePassword" element={<ChangePassword />} />
       <Route path="/About" element={<About />} />
       <Route path="/location" element={<Location />} />
+      <Route path="/Profile" element={<Profile />} />
       <Route
         path="/OrganizationInformation"
         element={<OrganizationInformation />}

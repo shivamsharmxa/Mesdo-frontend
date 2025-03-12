@@ -9,7 +9,7 @@ import Feed from "../feed/Feed";
 
 const Recruiter = () => {
   return (
-    <div className="flex">
+    <div className="flex ">
       {/* Sidebar */}
       <Sidebar />
 
