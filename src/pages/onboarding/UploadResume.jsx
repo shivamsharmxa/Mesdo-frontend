@@ -1,13 +1,44 @@
-import { useState } from "react";
-import { CloudUpload, Linkedin, Settings } from "lucide-react";
+import { useState, useCallback } from "react";
+import { ChevronRight, CloudUpload, Settings } from "lucide-react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleFileUpload = (event) => {
     const uploadedFile = event.target.files[0];
-    setFile(uploadedFile);
+    if (uploadedFile) {
+      setFile(uploadedFile);
+    }
   };
+
+  const handleDragEnter = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const uploadedFile = e.dataTransfer.files[0];
+    if (uploadedFile) {
+      setFile(uploadedFile);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 font-inter relative bg-gray-50">
@@ -19,9 +50,20 @@ const UploadResume = () => {
       {/* Drag and Drop Upload Section */}
       <label
         htmlFor="resumeUpload"
-        className="mt-6 w-[600px] h-90 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-500 transition bg-white shadow-sm hover:shadow-md"
+        className={`mt-6 w-[600px] h-90 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition bg-white shadow-sm hover:shadow-md ${
+          isDragging
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 hover:border-gray-500"
+        }`}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
-        <CloudUpload size={36} className="text-gray-500 mb-2" />
+        <CloudUpload
+          size={36}
+          className={`mb-2 ${isDragging ? "text-blue-500" : "text-gray-500"}`}
+        />
         {file ? (
           <p className="text-base text-gray-700">{file.name}</p>
         ) : (
@@ -37,7 +79,6 @@ const UploadResume = () => {
       <input
         id="resumeUpload"
         type="file"
-        accept=".pdf,.doc,.docx"
         className="hidden"
         onChange={handleFileUpload}
       />
@@ -51,9 +92,10 @@ const UploadResume = () => {
 
       {/* Setup Manually Button at Bottom Right */}
       <div className="absolute bottom-6 right-6">
-        <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition transform hover:scale-105">
-          <Settings size={16} />
+        <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-all duration-200 rounded-lg border border-gray-200 hover:border-blue-300 bg-white hover:bg-blue-50 shadow-xs hover:shadow-sm">
+          <Settings size={16} className="text-gray-500" />
           <span>Setup Manually</span>
+          <ChevronRight size={16} className="text-gray-400" />
         </button>
       </div>
     </div>
