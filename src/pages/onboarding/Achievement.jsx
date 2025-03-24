@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill CSS
 
 const Achievement = () => {
   const navigate = useNavigate();
@@ -13,14 +15,44 @@ const Achievement = () => {
     description: "",
   });
 
+  // ReactQuill Modules & Formats
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "align",
+    "link",
+    "image",
+  ];
+
   useEffect(() => {
-    axios.get("https://example.com/api/universities").then((response) => {
-      setUniversities(response.data);
-    });
+    axios
+      .get("https://example.com/api/universities")
+      .then((response) => setUniversities(response.data))
+      .catch((error) => console.error("Error fetching universities:", error));
   }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleDescriptionChange = (content) => {
+    setFormData({ ...formData, description: content });
   };
 
   const handleContinue = () => {
@@ -79,26 +111,31 @@ const Achievement = () => {
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
                 >
-                  <option>Select</option>
-                  {Array.from({ length: 10 }, (_, i) => (
-                    <option key={i}>{2025 - i}</option>
-                  ))}
+                  <option value="">Select</option>
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const year = 2025 - i;
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm text-gray-900">
-                Description*
-              </label>
-              <textarea
-                name="description"
+              <label className="block text-sm text-gray-900">Description</label>
+              <ReactQuill
+                theme="snow"
                 value={formData.description}
-                onChange={handleChange}
-                className="block w-full h-32 rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                placeholder="Enter a brief description"
-              ></textarea>
+                onChange={handleDescriptionChange}
+                modules={modules}
+                formats={formats}
+                placeholder="Write about your achievement..."
+                className="mt-2 bg-white border border-gray-300 rounded-md text-gray-700"
+              />
             </div>
 
             {/* + Add Achievement Button */}

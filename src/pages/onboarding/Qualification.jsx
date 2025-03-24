@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
+import ReactQuill from "react-quill";
 
 const Qualification = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const Qualification = () => {
   const [qualifications, setQualifications] = useState([]); // New state for qualifications
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [customUniversity, setCustomUniversity] = useState("");
+  const [value, setValue] = useState("");
   const handleUniversityChange = (selectedOption) => {
     if (selectedOption.value === "other") {
       setIsOtherSelected(true);
@@ -19,6 +21,30 @@ const Qualification = () => {
       setFormData({ ...formData, university: selectedOption.value });
     }
   };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"], // Remove formatting
+    ],
+  };
+  // Define ReactQuill Formats
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "align",
+    "link",
+    "image",
+  ];
 
   const [formData, setFormData] = useState({
     qualification: "",
@@ -33,6 +59,9 @@ const Qualification = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSkip = () => {
+    navigate("/Interest"); // Navigate to the next page
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -262,22 +291,26 @@ const Qualification = () => {
           {/* Description Input */}
           <div>
             <label className="block text-sm font-small text-gray-900">
-              Description*
+              Description
             </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-              rows="3"
-              placeholder="Enter a brief description"
-            ></textarea>
+            <ReactQuill
+              theme="snow"
+              value={value}
+              onChange={setValue}
+              modules={modules}
+              formats={formats}
+              placeholder="Description"
+              className="mt-2 bg-white border border-gray-300 rounded-md  text-gray-700"
+            />
           </div>
 
           {/* Continue Button */}
           <div className="mt-6 flex justify-between">
-            <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition">
-              Skip
+            <button
+              onClick={handleSkip}
+              className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition"
+            >
+              Skip All
             </button>
             <button
               onClick={handleContinue}

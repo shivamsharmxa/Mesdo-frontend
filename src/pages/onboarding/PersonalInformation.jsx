@@ -59,7 +59,7 @@ const PersonalInformation = () => {
             <input
               type="text"
               placeholder="Akhil Sharma"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="mt-1 block w-full rounded-md h-12 border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
             />
           </div>
 
@@ -71,7 +71,7 @@ const PersonalInformation = () => {
             <input
               type="email"
               placeholder="akhil.sharma@gmail.com"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="mt-1 block w-full rounded-md border h-12 border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
             />
           </div>
 
@@ -83,7 +83,7 @@ const PersonalInformation = () => {
             <input
               type="text"
               placeholder="921XXXX123"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="mt-1 block w-full rounded-md border h-12 border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
             />
           </div>
 
@@ -94,7 +94,7 @@ const PersonalInformation = () => {
                 Gender*
               </label>
               <div className="relative mt-1">
-                <select className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
+                <select className="appearance-none block w-full  h-12 rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
                   <option>Select</option>
                   <option>Male</option>
                   <option>Female</option>
@@ -114,7 +114,7 @@ const PersonalInformation = () => {
               <div className="relative mt-1">
                 <input
                   type="date"
-                  className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none"
+                  className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none"
                 />
               </div>
             </div>
@@ -127,7 +127,7 @@ const PersonalInformation = () => {
                 State
               </label>
               <div className="relative mt-1">
-                <select className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
+                <select className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
                   <option>Select</option>
                   {states.map((state, index) => (
                     <option key={index}>{state}</option>
@@ -145,7 +145,7 @@ const PersonalInformation = () => {
                 City
               </label>
               <div className="relative mt-1">
-                <select className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
+                <select className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
                   <option>Select</option>
                   <option>New Delhi</option>
                   <option>Mumbai</option>
@@ -167,7 +167,7 @@ const PersonalInformation = () => {
             onClick={() => navigate("/professionalSummary")}
             className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition"
           >
-            Continue
+            Next
           </button>
         </div>
       </div>

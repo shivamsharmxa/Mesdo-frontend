@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, Edit, Trash2, PlusCircle } from "lucide-react";
 
-const QualificationPreview = () => {
+const WorkPreview = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const initialFormData = location.state?.formData
@@ -60,7 +60,7 @@ const QualificationPreview = () => {
                 {formData.jobTitle} | {formData.hospital}
               </h2>
               <p className="text-sm text-gray-500">
-                {formData.location} ({formData.timePeriod})
+                {formData.location} {formData.startDate} {formData.endDate}
               </p>
               <ul className="list-disc list-inside mt-3 text-gray-700 text-sm space-y-1">
                 {formData.description && <li>{formData.description}</li>}
@@ -104,4 +104,4 @@ const QualificationPreview = () => {
   );
 };
 
-export default QualificationPreview;
+export default WorkPreview;

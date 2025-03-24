@@ -1,37 +1,51 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+import ReactQuill from "react-quill";
 
 const WorkExperience = () => {
   const navigate = useNavigate();
-  const [universities, setUniversities] = useState([]);
+  const [value, setValue] = useState("");
   const [formData, setFormData] = useState({
     jobTitle: "",
     hospital: "",
-    industry: "",
-    department: "",
     employmentType: "",
-    jobType: "",
-    timePeriod: "",
     location: "",
+    startDate: "",
+    endDate: "",
+    currentlyWorking: false,
     skills: "",
     description: "",
   });
 
+  // ReactQuill Modules
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "currentlyWorking" && checked ? { endDate: "" } : {}), // Reset end date if currently working
+    });
   };
 
   const handleContinue = () => {
     navigate("/WorkExperience-preview", { state: { formData } });
   };
-
-  useEffect(() => {
-    axios.get("https://example.com/api/universities").then((response) => {
-      setUniversities(response.data);
-    });
-  }, []);
+  const handleSkip = () => {
+    navigate("/Interest"); // Navigate to the next page
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -62,7 +76,7 @@ const WorkExperience = () => {
                   value={formData.jobTitle}
                   onChange={handleChange}
                   type="text"
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                  className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                   placeholder="Enter job title"
                 />
               </div>
@@ -76,48 +90,9 @@ const WorkExperience = () => {
                   value={formData.hospital}
                   onChange={handleChange}
                   type="text"
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                  className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                   placeholder="Enter hospital/clinic"
                 />
-              </div>
-            </div>
-
-            {/* Industry & Department */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-sm font-small text-gray-900">
-                  Industry
-                </label>
-                <select
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
-                  className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                >
-                  <option>Select</option>
-                  <option>Medical</option>
-                  <option>IT</option>
-                  <option>Accounting</option>
-                  <option>Other</option>
-                </select>
-              </div>
-
-              <div className="w-1/2">
-                <label className="block text-sm font-small text-gray-900">
-                  Department
-                </label>
-                <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  className="appearance-none block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                >
-                  <option>Select</option>
-                  <option>HR</option>
-                  <option>Finance</option>
-                  <option>Administration</option>
-                  <option>Other</option>
-                </select>
               </div>
             </div>
 
@@ -131,49 +106,12 @@ const WorkExperience = () => {
                   name="employmentType"
                   value={formData.employmentType}
                   onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                  className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 >
                   <option>Select</option>
                   <option>Full-Time</option>
                   <option>Part-Time</option>
                   <option>Contract</option>
-                </select>
-              </div>
-
-              <div className="w-1/2">
-                <label className="block text-sm font-small text-gray-900">
-                  Job Type
-                </label>
-                <select
-                  name="jobType"
-                  value={formData.jobType}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                >
-                  <option>Select</option>
-                  <option>Permanent</option>
-                  <option>Temporary</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Time Period & Location */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-sm font-small text-gray-900">
-                  Time Period
-                </label>
-                <select
-                  name="timePeriod"
-                  value={formData.timePeriod}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                >
-                  <option>Select</option>
-                  <option>Less than 6 months</option>
-                  <option>1 Year</option>
-                  <option>2 Years</option>
-                  <option>More than 3 Years</option>
                 </select>
               </div>
 
@@ -185,17 +123,64 @@ const WorkExperience = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                  className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 >
                   <option>Select</option>
-                  <option>Mumbai</option>
+                  <option>Gwalior</option>
                   <option>Delhi</option>
-                  <option>Bangalore</option>
+                  <option>Mumbai</option>
+                  <option>Pune</option>
+                  <option>Agra</option>
                 </select>
               </div>
             </div>
 
-            {/* Skills & Description */}
+            {/* Start Date & End Date */}
+            <div className="flex gap-4">
+              <div className="w-1/2">
+                <label className="block text-sm font-small text-gray-900">
+                  Time Period*
+                </label>
+                <input
+                  name="startDate"
+                  type="date"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  placeholder="Start Date"
+                  className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                />
+              </div>
+
+              {!formData.currentlyWorking && (
+                <div className="w-1/2">
+                  <label className="block text-sm font-small text-white">
+                    End Date
+                  </label>
+                  <input
+                    name="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    placeholder="End Date"
+                    className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Currently Working Checkbox */}
+            <div className="flex items-center gap-2 ml-145">
+              <input
+                type="checkbox"
+                name="currentlyWorking"
+                checked={formData.currentlyWorking}
+                onChange={handleChange}
+                className="w-4 h-5"
+              />
+              <label className="text-sm text-gray-900">Present</label>
+            </div>
+
+            {/* Skills */}
             <div>
               <label className="block text-sm font-small text-gray-900">
                 Skills*
@@ -205,29 +190,33 @@ const WorkExperience = () => {
                 value={formData.skills}
                 onChange={handleChange}
                 type="text"
-                className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+                className="block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
                 placeholder="Enter your skills"
               />
             </div>
 
+            {/* Description */}
             <div>
-              <label className="block text-sm font-small text-gray-900">
-                Description*
+              <label className="block text-sm font-medium text-gray-900">
+                Description
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-                rows="2"
-                placeholder="Enter a brief description"
-              ></textarea>
+              <ReactQuill
+                theme="snow"
+                value={value}
+                onChange={setValue}
+                modules={modules}
+                placeholder="Describe your work experience..."
+                className="mt-2 bg-white border border-gray-300 rounded-md text-gray-700 h-12"
+              />
             </div>
 
             {/* Continue Button */}
-            <div className="mt-4 flex justify-between">
-              <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition">
-                Skip
+            <div className="mt-15 flex justify-between">
+              <button
+                onClick={handleSkip}
+                className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition"
+              >
+                Skip All
               </button>
               <button
                 onClick={handleContinue}

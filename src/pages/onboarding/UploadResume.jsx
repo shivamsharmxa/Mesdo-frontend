@@ -42,34 +42,10 @@ const UploadResume = () => {
         onChange={handleFileUpload}
       />
 
-      {/* Divider with "Or" */}
-      <div className="flex items-center w-full max-w-lg my-6">
-        <div className="flex-grow border-t border-gray-300"></div>
-        <span className="mx-4 text-gray-500">Or</span>
-        <div className="flex-grow border-t border-gray-300"></div>
-      </div>
-
-      {/* Connect LinkedIn Section */}
-      <div className="w-[750px] flex items-center justify-between">
-        <div className="w-[500px]">
-          <h3 className="text-xl font-semibold text-gray-900">
-            Connect LinkedIn
-          </h3>
-          <p className="text-sm text-[#8C8C8C] mt-1">
-            Include all of your relevant experience and dates in this section.
-          </p>
-        </div>
-        <button
-          className="flex items-center justify-center bg-[#0077B5] text-white 
-  rounded-lg px-4 py-3 gap-2 w-[220px] h-[56px] 
-  hover:bg-[#005582] transition transform hover:scale-105 shadow-md"
-        >
-          <span className="bg-white rounded-sm p-[4px] flex items-center justify-center">
-            <Linkedin size={18} className="text-[#0077B5]" />
-          </span>
-          <span className="font-inter font-normal text-[16px] leading-[24px]">
-            Connect LinkedIn
-          </span>
+      {/* Next Button */}
+      <div>
+        <button className="mt-6 px-6 py-2 w-34 h-11 bg-[#1890FF] text-white font-semibold rounded-md hover:bg-blue-500 transition">
+          Next
         </button>
       </div>
 

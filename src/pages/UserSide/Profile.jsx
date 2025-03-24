@@ -1,21 +1,19 @@
 import { useState } from "react";
-import mesdoLogo from "../../assets/mesdo_logo.jpeg";
-import { MdWork } from "react-icons/md";
-import schoolIcon from "/src/assets/famicons_school-outline.png";
 import {
   Bell,
-  BriefcaseBusiness,
-  Hospital,
-  LayoutPanelLeft,
   MessageCircle,
-  MessageSquare,
   MoreHorizontal,
+  Pencil,
   Plus,
-  Rss,
   Search,
+  Settings,
+  Briefcase,
+  GraduationCap,
+  Award,
+  BookOpen,
+  Globe,
+  ChevronRight,
 } from "lucide-react";
-import hospitalicon from "../../assets/hospitalicon.png";
-import { SlBadge } from "react-icons/sl";
 
 const people = [
   {
@@ -50,17 +48,93 @@ const people = [
   },
 ];
 
-function WorkExperienceItem({ icon, title, organization, date, description }) {
+function WorkExperienceSection() {
+  const [experiences] = useState([
+    {
+      id: 1,
+      title: "Dental Surgeon",
+      type: "Full-Time",
+      institution: "All India Institute of Medical Science (AIIMS)",
+      location: "Delhi, India",
+      date: "Mar, 23 - Apr 25",
+      description: [
+        "Lorem ipsum dolor sit amet consectetur. Vitae egestas sollicitudin luctus velit eu nulla non.",
+        "Ipsum blandit neque malesuada phasellus elit cursus. Enim dignissim aliquam a fermentum vivamus est non eleifend ac.",
+      ],
+      tags: ["Lorem ipsum", "Lorem ipsum"],
+    },
+    {
+      id: 2,
+      title: "Dental Surgeon",
+      type: "Full-Time",
+      institution: "All India Institute of Medical Science (AIIMS)",
+      location: "Delhi, India",
+      date: "Mar, 23 - Apr 25",
+      description: [
+        "Lorem ipsum dolor sit amet consectetur. Vitae egestas sollicitudin luctus velit eu nulla non.",
+        "Ipsum blandit neque malesuada phasellus elit cursus. Enim dignissim aliquam a fermentum vivamus est non eleifend ac.",
+      ],
+      tags: ["Lorem ipsum", "Lorem ipsum"],
+    },
+  ]);
+
+  const handleEdit = (experience) => {
+    console.log("Editing experience:", experience);
+  };
+
   return (
-    <div className="flex items-start space-x-3">
-      <div className="mt-1">{icon}</div>
-      <div>
-        <p className="text-sm font-semibold text-gray-800">{title}</p>
-        <p className="text-sm text-gray-600">{organization}</p>
-        <p className="text-xs text-gray-500">{date}</p>
-        <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-          {description}
-        </p>
+    <div className="max-w-3xl mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Work Experience ({experiences.length})
+        </h2>
+        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <Pencil className="w-5 h-5 text-gray-700" />
+        </button>
+      </div>
+      <div className="space-y-4">
+        {experiences.map((experience) => (
+          <div
+            key={experience.id}
+            className="bg-white p-4 rounded-lg shadow-sm"
+          >
+            <div className="flex justify-between items-start">
+              <div className="flex gap-3">
+                <Briefcase className="w-5 h-5 text-blue-500" />
+                <div>
+                  <h3 className="font-semibold">{experience.title}</h3>
+                  <p className="text-sm text-gray-600">
+                    {experience.institution}
+                  </p>
+                  <p className="text-sm text-gray-500">{experience.date}</p>
+                  <div className="mt-2">
+                    {experience.description.map((desc, index) => (
+                      <p key={index} className="text-sm text-gray-700 mb-1">
+                        {desc}
+                      </p>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    {experience.tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => handleEdit(experience)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -69,7 +143,7 @@ function WorkExperienceItem({ icon, title, organization, date, description }) {
 function ExperienceItem() {
   return (
     <div className="flex items-start space-x-3">
-      <SlBadge className="text-blue-500 w-10 h-10 mt-1" />
+      <Briefcase className="text-blue-500 w-10 h-10 mt-1" />
       <div>
         <p className="text-sm font-semibold text-gray-800">
           10 years of Experience
@@ -83,10 +157,10 @@ function ExperienceItem() {
   );
 }
 
-function EducationItem({ icon, title, institute, date, description }) {
+function EducationItem({ title, institute, date, description }) {
   return (
     <div className="flex items-start space-x-3">
-      <div className="mt-1">{icon}</div>
+      <GraduationCap className="text-blue-500 w-5 h-5 mt-1" />
       <div>
         <p className="text-sm font-semibold text-gray-800">{title}</p>
         <p className="text-sm text-gray-600">{institute}</p>
@@ -149,103 +223,280 @@ const ProfileSection = () => {
 const TabsSection = ({ activeTab, setActiveTab }) => {
   const tabs = ["Overview", "Social Activity", "Applied Jobs", "Saved"];
 
+  const skills = [
+    "Laser Surgery",
+    "Dental Implants",
+    "Orthodontics",
+    "Root Canal",
+    "Cosmetic Dentistry",
+  ];
+
+  const certificates = [
+    {
+      id: 1,
+      title: "Certificate 1",
+      issuer: "Dental Association",
+      date: "2023",
+      image: "https://picsum.photos/100/60",
+    },
+    {
+      id: 2,
+      title: "Certificate 2",
+      issuer: "Medical Board",
+      date: "2022",
+      image: "https://picsum.photos/100/60",
+    },
+  ];
+
+  const awards = [
+    {
+      title: "Best Dental Surgeon",
+      issuer: "Medical Excellence Awards",
+      date: "2023",
+      description:
+        "Recognized for outstanding contribution in dental surgery and patient care",
+    },
+    {
+      title: "Research Excellence",
+      issuer: "Dental Research Institute",
+      date: "2022",
+      description: "Award for innovative research in dental implant techniques",
+    },
+  ];
+
+  const publications = [
+    {
+      title: "Advanced Techniques in Dental Surgery",
+      journal: "Journal of Dental Medicine",
+      date: "2023",
+      link: "#",
+    },
+    {
+      title: "Innovation in Dental Implants",
+      journal: "International Dental Research",
+      date: "2022",
+      link: "#",
+    },
+  ];
+
+  const languages = [
+    { language: "English", proficiency: "Native" },
+    { language: "Hindi", proficiency: "Professional" },
+    { language: "Spanish", proficiency: "Intermediate" },
+  ];
+
   return (
     <div className="mt-6">
-      <div className="flex border-b">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={`px-12 py-2 text-sm font-medium rounded-lg transition duration-300
-              ${
-                activeTab === tab
-                  ? "bg-blue-500 text-white"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+      {/* Tabs Container with Border */}
+      <div className="border border-gray-200 rounded-lg p-2 bg-white">
+        <div className="grid grid-cols-4 gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition duration-300
+            ${
+              activeTab === tab
+                ? "bg-blue-500 text-white"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-4">
         {activeTab === "Overview" && (
           <div>
+            {/* About Section */}
             <div className="bg-white rounded-md shadow-sm p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-2">
                 About
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                A highly experienced and dedicated **Cardiologist** with over
-                **10 years** of expertise in diagnosing and treating complex
-                heart conditions. Passionate about advancing patient care
-                through **innovative treatments** and **cutting-edge research**
-                in cardiovascular health.
+                A highly experienced and dedicated Cardiologist with over 10
+                years of expertise in diagnosing and treating complex heart
+                conditions. Passionate about advancing patient care through
+                innovative treatments and cutting-edge research in
+                cardiovascular health.
               </p>
               <p className="text-sm text-gray-600 leading-relaxed mt-3">
-                Currently leading a **specialized team** at MediCare Hospital,
-                providing high-quality patient care and implementing **advanced
-                medical techniques**. Committed to **continuous learning**,
-                mentorship, and contributing to the **medical community**
-                through research publications and healthcare initiatives.
+                Currently leading a specialized team at MediCare Hospital,
+                providing high-quality patient care and implementing advanced
+                medical techniques. Committed to continuous learning,
+                mentorship, and contributing to the medical community through
+                research publications and healthcare initiatives.
               </p>
-
-              <h3 className="text-sm font-semibold text-gray-800 mt-3">
-                Expertise
-              </h3>
-              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Cardiac Imaging & Diagnostics</li>
-                <li>Interventional Cardiology & Angioplasty</li>
-                <li>Heart Disease Prevention & Treatment</li>
-                <li>Hypertension & Cholesterol Management</li>
-              </ul>
             </div>
 
+            {/* Work Experience Section */}
             <div className="bg-white rounded-md shadow-sm p-6 mt-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Work Experience
-              </h2>
-              <div className="space-y-4">
-                <WorkExperienceItem
-                  icon={<MdWork className="text-blue-500 text-xl" />}
-                  title="Senior Cardiologist"
-                  organization="MediCare Hospital"
-                  date="2020 - Present"
-                  description="Specializing in advanced cardiovascular treatments, patient care, and medical research. Leading a team of healthcare professionals to provide top-quality medical services."
-                />
-                <WorkExperienceItem
-                  icon={<MdWork className="text-blue-500 text-xl" />}
-                  title="Resident Doctor"
-                  organization="City Health Clinic"
-                  date="2015 - 2020"
-                  description="Worked in the cardiology department, assisting in surgeries, patient care, and diagnostics. Gained hands-on experience in emergency response and critical care."
-                />
-              </div>
+              <WorkExperienceSection />
             </div>
 
+            {/* Education Section */}
             <div className="bg-white rounded-md shadow-sm p-6 mt-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Education
               </h2>
               <div className="space-y-4">
                 <EducationItem
-                  icon={
-                    <img src={schoolIcon} className="text-blue-500 text-xl" />
-                  }
                   title="MBBS"
                   institute="XYZ University"
                   date="2010 - 2015"
                   description="Lorem ipsum dolor sit amet consectetur. Quis auctor eu nisl amet consectetur et. Nisl sit pellentesque sit in euismod. Sit amet risus sit lorem."
                 />
                 <EducationItem
-                  icon={
-                    <img src={schoolIcon} className="text-blue-500 text-xl" />
-                  }
                   title="MD"
                   institute="ABC University"
                   date="2015 - 2018"
                   description="Lorem ipsum dolor sit amet consectetur. Quis auctor eu nisl amet consectetur et. Nisl sit pellentesque sit in euismod. Sit amet risus sit lorem."
                 />
+              </div>
+            </div>
+            {/* Skills/Specialization Section */}
+            <div className="bg-white rounded-md shadow-sm p-6 mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Skills / Specialization
+                </h2>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Certificates Section */}
+            <div className="bg-white rounded-md shadow-sm p-6 mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Certificates
+                </h2>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {certificates.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg"
+                  >
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-[100px] h-[60px] object-cover rounded"
+                    />
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {cert.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">{cert.issuer}</p>
+                      <p className="text-sm text-gray-500">{cert.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Awards and Achievements Section */}
+            <div className="bg-white rounded-md shadow-sm p-6 mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Awards & Achievements
+                </h2>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                {awards.map((award, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <Award className="w-5 h-5 text-blue-500 mt-1" />
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {award.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">{award.issuer}</p>
+                      <p className="text-sm text-gray-500">{award.date}</p>
+                      <p className="text-sm text-gray-700 mt-1">
+                        {award.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Publications Section */}
+            <div className="bg-white rounded-md shadow-sm p-6 mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Publications
+                </h2>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                {publications.map((pub, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <BookOpen className="w-5 h-5 text-blue-500 mt-1" />
+                    <div>
+                      <h3 className="font-medium text-gray-900">{pub.title}</h3>
+                      <p className="text-sm text-gray-600">{pub.journal}</p>
+                      <p className="text-sm text-gray-500">{pub.date}</p>
+                      <a
+                        href={pub.link}
+                        className="text-sm text-blue-500 hover:text-blue-600 inline-flex items-center mt-1"
+                      >
+                        View publication{" "}
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Languages Section */}
+            <div className="bg-white rounded-md shadow-sm p-6 mt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Languages
+                </h2>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                {languages.map((lang, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <Globe className="w-5 h-5 text-blue-500" />
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-gray-900">
+                          {lang.language}
+                        </span>
+                        <span className="text-sm text-gray-600">
+                          {lang.proficiency}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -282,8 +533,7 @@ const Profile = () => {
       <header className="bg-white shadow-sm fixed inset-x-0 top-0 z-40 ">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center ">
           <div className="flex items-center">
-            <img src={mesdoLogo} alt="Logo" className="h-10 w-10 -ml-13" />
-            <span className="ml-2 text-xl font-semibold">Mesdo</span>
+            <span className="text-xl font-semibold">Mesdo</span>
           </div>
           <div className="flex items-center flex-grow mx-4 ml-44">
             <div className="relative w-full">
@@ -299,15 +549,13 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex items-center">
-            <Bell className="text-gray-500"></Bell>
-            <i className="fas fa-bell text-xl text-gray-500 mr-4"></i>
-
+            <Bell className="text-gray-500 mr-4" />
             <img
               alt="User profile picture"
               className="w-10 h-10 rounded-full"
-              height="40"
-              src="https://storage.googleapis.com/a1aa/image/mjnzuz-z-y1Fmo5e0SW2spzUAb5hmXzqGeX1_-9gcAE.jpg"
+              src="https://picsum.photos/40"
               width="40"
+              height="40"
             />
           </div>
         </div>
@@ -319,7 +567,7 @@ const Profile = () => {
           {/* Switch Card */}
           <div className="mx-1 p-3 bg-gray-50 border rounded-lg shadow-sm flex items-center justify-between mb-5 border-[#FFFFFF]">
             <div className="flex items-center space-x-3">
-              <img src={hospitalicon} alt="Mesdo Logo" className="h-8 w-8" />
+              <Settings className="h-8 w-8 text-blue-500" />
               <div>
                 <h2 className="text-sm font-medium text-gray-800">Hospital</h2>
                 <p className="text-[11px] text-gray-500 cursor-pointer hover:underline">
@@ -336,14 +584,15 @@ const Profile = () => {
               Main Menu
             </h3>
             <ul className="space-y-2">
-              <NavItem icon={<LayoutPanelLeft size={18} />} text="Dashboard" />
-              <NavItem icon={<Hospital size={18} />} text="Profile" />
+              <NavItem icon={<Settings size={18} />} text="Dashboard" />
               <NavItem
-                icon={<BriefcaseBusiness size={18} />}
-                text="Recruitment"
+                icon={<Settings size={18} />}
+                text="Profile"
+                active={true}
               />
-              <NavItem icon={<Rss size={18} />} text="Feed" />
-              <NavItem icon={<MessageSquare size={18} />} text="Messages" />
+              <NavItem icon={<Settings size={18} />} text="Recruitment" />
+              <NavItem icon={<Settings size={18} />} text="Feed" />
+              <NavItem icon={<Settings size={18} />} text="Messages" />
             </ul>
           </div>
 
@@ -352,11 +601,8 @@ const Profile = () => {
               Others
             </h3>
             <ul className="space-y-2">
-              <NavItem
-                icon={<LayoutPanelLeft size={18} />}
-                text="Candidate Search"
-              />
-              <NavItem icon={<Hospital size={18} />} text="Analytics" />
+              <NavItem icon={<Settings size={18} />} text="Candidate Search" />
+              <NavItem icon={<Settings size={18} />} text="Analytics" />
             </ul>
           </div>
 
@@ -365,11 +611,8 @@ const Profile = () => {
               Preferences
             </h3>
             <ul className="space-y-2">
-              <NavItem
-                icon={<LayoutPanelLeft size={18} />}
-                text="Help Center"
-              />
-              <NavItem icon={<Hospital size={18} />} text="Settings" />
+              <NavItem icon={<Settings size={18} />} text="Help Center" />
+              <NavItem icon={<Settings size={18} />} text="Settings" />
             </ul>
           </div>
         </div>
@@ -430,12 +673,17 @@ const Profile = () => {
   );
 };
 
-const NavItem = ({ icon, text }) => {
+const NavItem = ({ icon, text, active = false }) => {
   return (
     <li>
       <a
         href="#"
-        className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all"
+        className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm transition-all
+            ${
+              active
+                ? "bg-blue-100 text-blue-700"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            }`}
       >
         {icon}
         <span>{text}</span>
