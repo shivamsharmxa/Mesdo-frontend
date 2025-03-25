@@ -13,6 +13,7 @@ import {
   BookOpen,
   Globe,
   ChevronRight,
+  X,
 } from "lucide-react";
 
 const people = [
@@ -49,7 +50,7 @@ const people = [
 ];
 
 function WorkExperienceSection() {
-  const [experiences] = useState([
+  const [experiences, setExperiences] = useState([
     {
       id: 1,
       title: "Dental Surgeon",
@@ -78,12 +79,72 @@ function WorkExperienceSection() {
     },
   ]);
 
+  const [editingExperience, setEditingExperience] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newDescription, setNewDescription] = useState("");
+  const [newTag, setNewTag] = useState("");
+
   const handleEdit = (experience) => {
-    console.log("Editing experience:", experience);
+    setEditingExperience({ ...experience });
+    setIsEditing(true);
   };
 
+  const handleSave = () => {
+    if (editingExperience) {
+      setExperiences(
+        experiences.map((exp) =>
+          exp.id === editingExperience.id ? editingExperience : exp
+        )
+      );
+      setIsEditing(false);
+      setEditingExperience(null);
+    }
+  };
+  const handleAddDescription = () => {
+    if (newDescription.trim()) {
+      setEditingExperience({
+        ...editingExperience,
+        description: [...editingExperience.description, newDescription.trim()],
+      });
+      setNewDescription("");
+    }
+  };
+
+  const handleRemoveDescription = (index) => {
+    setEditingExperience({
+      ...editingExperience,
+      description: editingExperience.description.filter((_, i) => i !== index),
+    });
+  };
+  const handleAddTag = () => {
+    if (newTag.trim() && editingExperience) {
+      setEditingExperience({
+        ...editingExperience,
+        tags: [...(editingExperience.tags || []), newTag.trim()],
+      });
+      setNewTag("");
+    }
+  };
+
+  const handleRemoveTag = (index) => {
+    if (editingExperience) {
+      setEditingExperience({
+        ...editingExperience,
+        tags: editingExperience.tags.filter((_, i) => i !== index),
+      });
+    }
+  };
+  const EditorButton = ({ icon: Icon, onClick }) => (
+    <button
+      onClick={onClick}
+      className="p-2 hover:bg-gray-100 rounded transition-colors"
+    >
+      <Icon className="w-4 h-4 text-gray-600" />
+    </button>
+  );
+
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 relative">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           Work Experience ({experiences.length})
@@ -92,6 +153,207 @@ function WorkExperienceSection() {
           <Pencil className="w-5 h-5 text-gray-700" />
         </button>
       </div>
+
+      {isEditing && (
+        <div className="absolute inset-0 z-10 bg-white p-6 rounded-lg shadow-xl border border-gray-200">
+          {/* Blurred Background */}
+
+          {/* Edit Modal */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold">Edit Work Experience</h3>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Job Title
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={editingExperience.title}
+                    onChange={(e) =>
+                      setEditingExperience({
+                        ...editingExperience,
+                        title: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Employment Type
+                  </label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={editingExperience.type}
+                    onChange={(e) =>
+                      setEditingExperience({
+                        ...editingExperience,
+                        type: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="Full-Time">Full-Time</option>
+                    <option value="Part-Time">Part-Time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Freelance">Freelance</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Institution
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  value={editingExperience.institution}
+                  onChange={(e) =>
+                    setEditingExperience({
+                      ...editingExperience,
+                      institution: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={editingExperience.location}
+                    onChange={(e) =>
+                      setEditingExperience({
+                        ...editingExperience,
+                        location: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date Range
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={editingExperience.date}
+                    onChange={(e) =>
+                      setEditingExperience({
+                        ...editingExperience,
+                        date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <div className="space-y-2 mb-3">
+                  {editingExperience.description.map((desc, index) => (
+                    <div key={index} className="flex items-center">
+                      <span className="flex-1 px-3 py-2 bg-gray-50 rounded text-sm">
+                        {desc}
+                      </span>
+                      <button
+                        onClick={() => handleRemoveDescription(index)}
+                        className="ml-2 text-red-500 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    placeholder="Add new description point"
+                  />
+                  <button
+                    onClick={handleAddDescription}
+                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tags
+                </label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {editingExperience.tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => handleRemoveTag(index)}
+                        className="ml-1 text-gray-500 hover:text-red-500"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="Add new tag"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 p-4 border-t">
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-4">
         {experiences.map((experience) => (
           <div
@@ -139,7 +401,6 @@ function WorkExperienceSection() {
     </div>
   );
 }
-
 function ExperienceItem() {
   return (
     <div className="flex items-start space-x-3">

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { ChevronRight, CloudUpload, Settings } from "lucide-react";
+import { ChevronRight, FileInput, Settings } from "lucide-react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
@@ -41,61 +41,79 @@ const UploadResume = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 font-inter relative bg-gray-50">
-      <h2 className="text-3xl font-bold text-gray-900">Upload Resume</h2>
-      <p className="text-sm mt-2 text-[#8C8C8C]">
-        Include all of your relevant experience and dates in this section.
-      </p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-4">
+      <div className="w-full max-w-[653px] text-center">
+        <h2 className="text-[28px] font-semibold text-gray-900 mb-2">
+          Upload Resume
+        </h2>
+        <p className="text-base text-[#8C8C8C]">
+          Include all of your relevant experience and dates in this section.
+        </p>
 
-      {/* Drag and Drop Upload Section */}
-      <label
-        htmlFor="resumeUpload"
-        className={`mt-6 w-[600px] h-90 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition bg-white shadow-sm hover:shadow-md ${
-          isDragging
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-gray-500"
-        }`}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <CloudUpload
-          size={36}
-          className={`mb-2 ${isDragging ? "text-blue-500" : "text-gray-500"}`}
+        {/* Upload Area */}
+        <label
+          htmlFor="resumeUpload"
+          className={`mt-8 w-full h-[378px]   bg-[#F7F7F7] border border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all ${
+            isDragging
+              ? "border-[#1890FF] bg-blue-50"
+              : "border-[#D9D9D9] hover:border-[#1890FF]"
+          }`}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          <div className="flex flex-col items-center">
+            {/* Replaced SVG with Lucide FileInput Icon */}
+            <FileInput size={50} className="text-[#000000] mb-4 opacity-70" />
+
+            {file ? (
+              <p className="text-base text-gray-700">{file.name}</p>
+            ) : (
+              <>
+                <p className="text-base text-gray-900">
+                  <span className="underline font-medium">Click to upload</span>
+                  <span className="text-[#646262] font-sm">
+                    {" "}
+                    or Drag and drop
+                  </span>
+                </p>
+                <p
+                  className="text-sm  mt-1"
+                  style={{ color: "rgba(0, 0, 0, 0.4)" }}
+                >
+                  Maximum file size 50MB
+                </p>
+              </>
+            )}
+          </div>
+        </label>
+        <input
+          id="resumeUpload"
+          type="file"
+          className="hidden"
+          onChange={handleFileUpload}
+          accept=".pdf,.doc,.docx"
         />
-        {file ? (
-          <p className="text-base text-gray-700">{file.name}</p>
-        ) : (
-          <>
-            <p className="text-base font-semibold text-gray-700">
-              <span className="underline">Click to upload</span>{" "}
-              <span className="text-sm text-black/50">or Drag and drop</span>
-            </p>
-            <p className="text-sm text-black/50 ">Maximum file size 50MB</p>
-          </>
-        )}
-      </label>
-      <input
-        id="resumeUpload"
-        type="file"
-        className="hidden"
-        onChange={handleFileUpload}
-      />
 
-      {/* Next Button */}
-      <div>
-        <button className="mt-6 px-6 py-2 w-34 h-11 bg-[#1890FF] text-white font-semibold rounded-md hover:bg-blue-500 transition">
+        {/* Next Button */}
+        <button className="mt-6 w-40 h-[44px] bg-[#1890FF] text-white font-medium rounded-lg hover:bg-blue-500 transition-colors">
           Next
         </button>
       </div>
 
-      {/* Setup Manually Button at Bottom Right */}
-      <div className="absolute bottom-6 right-6">
-        <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-all duration-200 rounded-lg border border-gray-200 hover:border-blue-300 bg-white hover:bg-blue-50 shadow-xs hover:shadow-sm">
-          <Settings size={16} className="text-gray-500" />
+      {/* Setup Manually Button */}
+      <div className="fixed bottom-6 right-6">
+        <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#595959] bg-white border border-[#D9D9D9] rounded-lg hover:text-[#1890FF] hover:border-[#1890FF] transition-colors group">
+          <Settings
+            size={16}
+            className="text-[#8C8C8C] group-hover:text-[#1890FF]"
+          />
           <span>Setup Manually</span>
-          <ChevronRight size={16} className="text-gray-400" />
+          <ChevronRight
+            size={16}
+            className="text-[#8C8C8C] group-hover:text-[#1890FF]"
+          />
         </button>
       </div>
     </div>
