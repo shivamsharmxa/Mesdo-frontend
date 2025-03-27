@@ -53,7 +53,7 @@ const UploadResume = () => {
         {/* Upload Area */}
         <label
           htmlFor="resumeUpload"
-          className={`mt-8 w-full h-[378px]   bg-[#F7F7F7] border border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all ${
+          className={`mt-8 w-full h-[378px]   bg-[#F7F7F7] border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all ${
             isDragging
               ? "border-[#1890FF] bg-blue-50"
               : "border-[#D9D9D9] hover:border-[#1890FF]"

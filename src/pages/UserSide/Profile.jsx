@@ -14,7 +14,56 @@ import {
   Globe,
   ChevronRight,
   X,
+  ShieldCheck,
+  Ellipsis,
+  PlusCircle,
+  PlusIcon,
+  Edit,
+  Trash2,
+  AwardIcon,
 } from "lucide-react";
+import QualificationsPreview from "../../components/profile/QualificationsPreview";
+import NavItem from "../../components/profile/NavItem";
+import WorkExperience from "../../Components/profile/AddWorkExperience";
+import SkillsSpecialization from "../../components/profile/SkillsSpecialization";
+import CertificateList from "../../Components/profile/CertificateList";
+import ProfileSection from "../../components/profile/ProfileSection";
+import EducationItem from "../../Components/profile/EducationItem";
+import WorkExperienceSection from "../../Components/profile/WorkExperienceSection";
+
+import AchievementPreview from "../../Components/profile/AchievementPreview";
+import ExtraInformation from "../../Components/profile/ExtraInformation";
+import AddQualification from "../../Components/profile/AddQualification";
+
+import WorkExperienceForm from "../../components/profile/WorkExperienceForm";
+
+// import ReactQuill from "react-quill";
+//
+// import "react-quill/dist/quill.snow.css"; // Import Quill CSS
+
+// ReactQuill Modules & Formats
+// const modules = {
+//   toolbar: [
+//     [{ header: [1, 2, false] }],
+//     ["bold", "italic", "underline", "strike"],
+//     [{ list: "ordered" }, { list: "bullet" }],
+//     [{ align: [] }],
+//     ["link", "image"],
+//     ["clean"],
+//   ],
+// };
+// const formats = [
+//   "header",
+//   "bold",
+//   "italic",
+//   "underline",
+//   "strike",
+//   "list",
+//   "bullet",
+//   "align",
+//   "link",
+//   "image",
+// ];
 
 const people = [
   {
@@ -49,358 +98,6 @@ const people = [
   },
 ];
 
-function WorkExperienceSection() {
-  const [experiences, setExperiences] = useState([
-    {
-      id: 1,
-      title: "Dental Surgeon",
-      type: "Full-Time",
-      institution: "All India Institute of Medical Science (AIIMS)",
-      location: "Delhi, India",
-      date: "Mar, 23 - Apr 25",
-      description: [
-        "Lorem ipsum dolor sit amet consectetur. Vitae egestas sollicitudin luctus velit eu nulla non.",
-        "Ipsum blandit neque malesuada phasellus elit cursus. Enim dignissim aliquam a fermentum vivamus est non eleifend ac.",
-      ],
-      tags: ["Lorem ipsum", "Lorem ipsum"],
-    },
-    {
-      id: 2,
-      title: "Dental Surgeon",
-      type: "Full-Time",
-      institution: "All India Institute of Medical Science (AIIMS)",
-      location: "Delhi, India",
-      date: "Mar, 23 - Apr 25",
-      description: [
-        "Lorem ipsum dolor sit amet consectetur. Vitae egestas sollicitudin luctus velit eu nulla non.",
-        "Ipsum blandit neque malesuada phasellus elit cursus. Enim dignissim aliquam a fermentum vivamus est non eleifend ac.",
-      ],
-      tags: ["Lorem ipsum", "Lorem ipsum"],
-    },
-  ]);
-
-  const [editingExperience, setEditingExperience] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newDescription, setNewDescription] = useState("");
-  const [newTag, setNewTag] = useState("");
-
-  const handleEdit = (experience) => {
-    setEditingExperience({ ...experience });
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    if (editingExperience) {
-      setExperiences(
-        experiences.map((exp) =>
-          exp.id === editingExperience.id ? editingExperience : exp
-        )
-      );
-      setIsEditing(false);
-      setEditingExperience(null);
-    }
-  };
-  const handleAddDescription = () => {
-    if (newDescription.trim()) {
-      setEditingExperience({
-        ...editingExperience,
-        description: [...editingExperience.description, newDescription.trim()],
-      });
-      setNewDescription("");
-    }
-  };
-
-  const handleRemoveDescription = (index) => {
-    setEditingExperience({
-      ...editingExperience,
-      description: editingExperience.description.filter((_, i) => i !== index),
-    });
-  };
-  const handleAddTag = () => {
-    if (newTag.trim() && editingExperience) {
-      setEditingExperience({
-        ...editingExperience,
-        tags: [...(editingExperience.tags || []), newTag.trim()],
-      });
-      setNewTag("");
-    }
-  };
-
-  const handleRemoveTag = (index) => {
-    if (editingExperience) {
-      setEditingExperience({
-        ...editingExperience,
-        tags: editingExperience.tags.filter((_, i) => i !== index),
-      });
-    }
-  };
-  const EditorButton = ({ icon: Icon, onClick }) => (
-    <button
-      onClick={onClick}
-      className="p-2 hover:bg-gray-100 rounded transition-colors"
-    >
-      <Icon className="w-4 h-4 text-gray-600" />
-    </button>
-  );
-
-  return (
-    <div className="max-w-3xl mx-auto p-6 relative">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">
-          Work Experience ({experiences.length})
-        </h2>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <Pencil className="w-5 h-5 text-gray-700" />
-        </button>
-      </div>
-
-      {isEditing && (
-        <div className="absolute inset-0 z-10 bg-white p-6 rounded-lg shadow-xl border border-gray-200">
-          {/* Blurred Background */}
-
-          {/* Edit Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-semibold">Edit Work Experience</h3>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Job Title
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={editingExperience.title}
-                    onChange={(e) =>
-                      setEditingExperience({
-                        ...editingExperience,
-                        title: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Employment Type
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={editingExperience.type}
-                    onChange={(e) =>
-                      setEditingExperience({
-                        ...editingExperience,
-                        type: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="Full-Time">Full-Time</option>
-                    <option value="Part-Time">Part-Time</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Freelance">Freelance</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Institution
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                  value={editingExperience.institution}
-                  onChange={(e) =>
-                    setEditingExperience({
-                      ...editingExperience,
-                      institution: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={editingExperience.location}
-                    onChange={(e) =>
-                      setEditingExperience({
-                        ...editingExperience,
-                        location: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date Range
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={editingExperience.date}
-                    onChange={(e) =>
-                      setEditingExperience({
-                        ...editingExperience,
-                        date: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <div className="space-y-2 mb-3">
-                  {editingExperience.description.map((desc, index) => (
-                    <div key={index} className="flex items-center">
-                      <span className="flex-1 px-3 py-2 bg-gray-50 rounded text-sm">
-                        {desc}
-                      </span>
-                      <button
-                        onClick={() => handleRemoveDescription(index)}
-                        className="ml-2 text-red-500 hover:text-red-700"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={newDescription}
-                    onChange={(e) => setNewDescription(e.target.value)}
-                    placeholder="Add new description point"
-                  />
-                  <button
-                    onClick={handleAddDescription}
-                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tags
-                </label>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {editingExperience.tags.map((tag, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                    >
-                      {tag}
-                      <button
-                        onClick={() => handleRemoveTag(index)}
-                        className="ml-1 text-gray-500 hover:text-red-500"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    placeholder="Add new tag"
-                  />
-                  <button
-                    onClick={handleAddTag}
-                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 p-4 border-t">
-              <button
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {experiences.map((experience) => (
-          <div
-            key={experience.id}
-            className="bg-white p-4 rounded-lg shadow-sm"
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex gap-3">
-                <Briefcase className="w-5 h-5 text-blue-500" />
-                <div>
-                  <h3 className="font-semibold">{experience.title}</h3>
-                  <p className="text-sm text-gray-600">
-                    {experience.institution}
-                  </p>
-                  <p className="text-sm text-gray-500">{experience.date}</p>
-                  <div className="mt-2">
-                    {experience.description.map((desc, index) => (
-                      <p key={index} className="text-sm text-gray-700 mb-1">
-                        {desc}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    {experience.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => handleEdit(experience)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 function ExperienceItem() {
   return (
     <div className="flex items-start space-x-3">
@@ -418,71 +115,118 @@ function ExperienceItem() {
   );
 }
 
-function EducationItem({ title, institute, date, description }) {
-  return (
-    <div className="flex items-start space-x-3">
-      <GraduationCap className="text-blue-500 w-5 h-5 mt-1" />
-      <div>
-        <p className="text-sm font-semibold text-gray-800">{title}</p>
-        <p className="text-sm text-gray-600">{institute}</p>
-        <p className="text-xs text-gray-500">{date}</p>
-        <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-const ProfileSection = () => {
-  return (
-    <div className="w-full">
-      {/* Cover Photo */}
-      <div className="bg-blue-500 h-48 rounded-t-lg relative">
-        <img
-          src="https://picsum.photos/1200/300"
-          alt="Cover Photo"
-          className="w-full h-full object-cover rounded-t-lg"
-        />
-      </div>
-
-      {/* Profile Info */}
-      <div className="bg-white p-6 rounded-b-lg shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              alt="Profile Picture"
-              className="w-24 h-24 rounded-full mr-6 -mt-2 border-4 border-white"
-              src="https://picsum.photos/100"
-              width="100"
-              height="100"
-            />
-            <div>
-              <h2 className="text-2xl font-semibold">Dr. Rahul Sharma</h2>
-              <p className="text-gray-600 text-sm">
-                Heart Specialist at Medico
-              </p>
-            </div>
-          </div>
-          <div className="flex mt-4 items-center">
-            <button className="bg-gray-200 p-2 rounded mr-2 hover:bg-gray-300 transition duration-300">
-              <MoreHorizontal className="text-gray-700 w-5 h-5" />
-            </button>
-            <button className="bg-blue-500 text-sm text-white px-4 py-2 rounded flex mr-2 hover:bg-blue-600 transition duration-300">
-              <span className="w-4 h-4 mr-1">+</span> Follow
-            </button>
-            <button className="bg-gray-200 text-sm text-gray-700 px-4 py-2 rounded flex items-center mr-2 hover:bg-gray-300 transition duration-300">
-              <MessageCircle className="w-4 h-4 mr-1" /> Message
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const TabsSection = ({ activeTab, setActiveTab }) => {
+const TabsSection = ({
+  activeTab,
+  setActiveTab,
+  experience,
+  onSave,
+  onCancel,
+}) => {
   const tabs = ["Overview", "Social Activity", "Applied Jobs", "Saved"];
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [activeModalTab, setActiveModalTab] = useState("About");
+
+  const [aboutData, setAboutData] = useState({
+    tagline: "A highly experienced and dedicated Cardiologist...",
+    description: `Currently leading a specialized team at MediCare Hospital, 
+    providing high-quality patient care and implementing advanced medical techniques. 
+    Committed to continuous learning, mentorship, and contributing to the medical 
+    community through research publications and healthcare initiatives.`,
+  });
+
+  // Local state for editing (so changes don’t immediately reflect)
+  const [editData, setEditData] = useState({ ...aboutData });
+  const [editingExperience, setEditingExperience] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [experiences, setExperiences] = useState([
+    // Your initial experiences data here
+    {
+      id: 1,
+      title: "Dental Surgeon",
+      type: "Full-Time",
+      institution: "AIIMS",
+      location: "Delhi, India",
+      date: "Mar, 23 - Apr 25",
+      description: [
+        "Lorem ipsum dolor sit amet consectetur.",
+        "Ipsum blandit neque malesuada phasellus elit cursus.",
+      ],
+      tags: ["Lorem ipsum", "Lorem ipsum"],
+    },
+    // Add more experiences if needed
+  ]);
+
+  // Handle input changes in the modal
+  const handleChange = (e) => {
+    setEditData({ ...editData, [e.target.name]: e.target.value });
+  };
+
+  // Save changes and update the About section
+  const handleSave = () => {
+    setAboutData(editData); // Update the state with edited data
+    setIsEditing(false); // Close the modal
+  };
+  const handleSaveExperience = (savedExperience) => {
+    if (editingExperience) {
+      // Update existing experience
+      setExperiences(
+        experiences.map((exp) =>
+          exp.id === savedExperience.id ? savedExperience : exp
+        )
+      );
+    } else {
+      // Add new experience - make sure this has all required fields
+      setExperiences([
+        ...experiences,
+        {
+          ...savedExperience,
+          id: Date.now(), // Generate unique ID
+          title: savedExperience.title || "",
+          institution: savedExperience.institution || "",
+          type: savedExperience.type || "",
+          location: savedExperience.location || "",
+          startDate: savedExperience.startDate || "",
+          endDate: savedExperience.currentlyWorking
+            ? ""
+            : savedExperience.endDate || "",
+          currentlyWorking: savedExperience.currentlyWorking || false,
+          description: savedExperience.description || "",
+          tags: savedExperience.tags || [],
+        },
+      ]);
+    }
+    setEditingExperience(null);
+    setActiveModalTab("Work Experience"); // Return to list view
+  };
+  const handleEdit = (experience) => {
+    setEditingExperience(experience);
+    setActiveTab("editExperience");
+  };
+  const handleClose = () => {
+    setIsModalOpen(false); // Ensure the modal is closed
+    setActiveTab("workExperience"); // Reset tab if needed
+  };
+
+  const handleCancel = () => {
+    setActiveTab("workExperience");
+  };
+
+  // Function to open the modal
+  const openModal = (tab) => {
+    setIsEditing(true);
+    setActiveModalTab(tab);
+  };
+
+  const ModalTabs = [
+    "About",
+    "Work Experience",
+    "Qualification",
+    "Certifications",
+    "Skills",
+    "Awards & Achievements",
+    "Extra Information",
+  ];
 
   const skills = [
     "Laser Surgery",
@@ -573,35 +317,410 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
           <div>
             {/* About Section */}
             <div className="bg-white rounded-md shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                About
-              </h2>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-semibold text-gray-800">About</h2>
+                <button
+                  onClick={() => {
+                    setEditData({ ...aboutData }); // Set existing values in input
+                    setActiveModalTab("About");
+                    setIsEditing(true);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <Pencil className="w-5 h-5" />
+                </button>
+              </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                A highly experienced and dedicated Cardiologist with over 10
-                years of expertise in diagnosing and treating complex heart
-                conditions. Passionate about advancing patient care through
-                innovative treatments and cutting-edge research in
-                cardiovascular health.
+                {aboutData.tagline}
               </p>
               <p className="text-sm text-gray-600 leading-relaxed mt-3">
-                Currently leading a specialized team at MediCare Hospital,
-                providing high-quality patient care and implementing advanced
-                medical techniques. Committed to continuous learning,
-                mentorship, and contributing to the medical community through
-                research publications and healthcare initiatives.
+                {aboutData.description}
               </p>
             </div>
 
+            {isEditing && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/50 bg-opacity-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <div className="flex flex-col md:flex-row gap-6  px-3 py-4">
+                    {/* Sidebar Menu */}
+                    <div className="w-full md:w-1/4 lg:w-1/5 ">
+                      <h3 className="text-lg font-semibold  px-4 py-3 text-gray-800">
+                        Overview
+                      </h3>
+                      <ul className="">
+                        {ModalTabs.map((item, index) => (
+                          <li key={index} className="w-full ">
+                            <button
+                              className={`w-full h-14 text-left px-4 py-3 text-sm font-medium border-[1px] border-gray-200    transition-all duration-300
+              ${
+                activeModalTab === item
+                  ? "bg-[#1890ff] text-white"
+                  : "text-gray-700 hover:bg-[#1890ff] hover:text-white"
+              }`}
+                              onClick={() => setActiveModalTab(item)}
+                            >
+                              {item}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Edit Modal */}
+                    <div className="w-full md:w-3/4 lg:w-4/5 bg-white ">
+                      {activeModalTab === "About" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">About</h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <div className="p-6 space-y-4">
+                            {/* Tagline Input */}
+                            <div className="flex flex-col gap-2">
+                              <label
+                                htmlFor="tagline"
+                                className="block text-sm font-medium text-gray-700 mb-1"
+                              >
+                                Tagline
+                              </label>
+                              <input
+                                type="text"
+                                id="tagline"
+                                name="tagline"
+                                value={editData.tagline}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+                              />
+                            </div>
+
+                            {/* Description Input */}
+                            <div className="flex flex-col gap-2">
+                              <label
+                                htmlFor="description"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                Description
+                              </label>
+                              <textarea
+                                id="description"
+                                name="description"
+                                rows="5"
+                                value={editData.description}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+                              />
+                            </div>
+                            {/* Buttons */}
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => setIsEditing(false)}
+                                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={handleSave}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {activeModalTab === "Work Experience" && (
+                        <div>
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Work Experience
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+
+                          <div className="flex justify-end my-4">
+                            <button
+                              className="flex items-center gap-2 cursor-pointer bg-blue-500 text-white px-3 py-2 rounded-lg"
+                              onClick={() => {
+                                setEditingExperience(null); // Clear any previous edit
+                                setActiveModalTab("Add Work Experience");
+                              }}
+                            >
+                              <Plus size={15} />
+                              Add New
+                            </button>
+                          </div>
+
+                          <div className="space-y-4 p-4">
+                            {experiences.map((exp) => (
+                              <div
+                                key={exp.id}
+                                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+                              >
+                                <div className="flex justify-between items-start">
+                                  <div className="flex gap-3">
+                                    <Briefcase className="w-5 h-5 text-blue-500" />
+                                    <div>
+                                      <h3 className="font-semibold">
+                                        {exp.title}
+                                      </h3>
+                                      <p className="text-sm text-gray-600">
+                                        {exp.institution}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {exp.type}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {exp.startDate} -{" "}
+                                        {exp.currentlyWorking
+                                          ? "Present"
+                                          : exp.endDate}
+                                      </p>
+                                      <p className="text-sm text-gray-600">
+                                        {exp.location}
+                                      </p>
+                                      <div
+                                        className="mt-2"
+                                        dangerouslySetInnerHTML={{
+                                          __html: exp.description,
+                                        }}
+                                      />
+                                      <div className="flex gap-2 mt-2">
+                                        {exp.tags.map((tag, index) => (
+                                          <span
+                                            key={index}
+                                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                                          >
+                                            {tag}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      setEditingExperience(exp);
+                                      setActiveModalTab("Add Work Experience");
+                                    }}
+                                    className="text-gray-500 hover:text-gray-700"
+                                  >
+                                    <Pencil className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeModalTab === "Add Work Experience" && (
+                        <div className="fixed inset-0 bg-white/50 flex items-center justify-center z-50">
+                          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                            <div className="flex items-center justify-between p-4 border-b">
+                              <h3 className="text-lg font-semibold">
+                                {editingExperience
+                                  ? "Edit Work Experience"
+                                  : "Add Work Experience"}
+                              </h3>
+                              <button
+                                onClick={() =>
+                                  setActiveModalTab("Work Experience")
+                                }
+                                className="text-gray-500 hover:text-gray-700"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            </div>
+                            <WorkExperienceForm
+                              experience={editingExperience}
+                              onSave={handleSaveExperience} // Use the proper save handler
+                              onCancel={() =>
+                                setActiveModalTab("Work Experience")
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {activeModalTab === "Qualification" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Qualification
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <div>
+                            <div className="w-full flex justify-end p-4">
+                              {" "}
+                              <button
+                                className="flex items-center gap-2 cursor-pointer bg-blue-500 text-white px-3 py-2 rounded-lg"
+                                onClick={() =>
+                                  setActiveModalTab("Add Qualification")
+                                }
+                              >
+                                {" "}
+                                <PlusCircle size={15} />
+                                Add
+                              </button>
+                            </div>
+                            <QualificationsPreview />{" "}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeModalTab === "Add Qualification" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Qualification
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <AddQualification />
+                        </div>
+                      )}
+
+                      {activeModalTab === "Certifications" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Certification
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <CertificateList />
+                        </div>
+                      )}
+                      {activeModalTab === "Skills" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center flex-col justify-between p-4 border-b">
+                            <div className="flex flex-row  justify-between w-full">
+                              <h3 className="text-lg font-semibold">Skill</h3>
+                              <button
+                                onClick={() => setIsEditing(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            </div>
+                            <SkillsSpecialization />
+                          </div>
+                        </div>
+                      )}
+                      {activeModalTab === "Awards & Achievements" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Awards & Achievements
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <AchievementPreview />
+                        </div>
+                      )}
+                      {activeModalTab === "Extra Information" && (
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              Extra Information
+                            </h3>
+                            <button
+                              onClick={() => setIsEditing(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                          <ExtraInformation />
+                        </div>
+                      )}
+                      {activeModalTab === "Work Experience preview" && (
+                        <div>
+                          <h1>Hello work experience preview</h1>
+                        </div>
+                      )}
+                      {activeModalTab === ""}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Work Experience Section */}
             <div className="bg-white rounded-md shadow-sm p-6 mt-6">
-              <WorkExperienceSection />
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Work Experience
+                </h2>
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Work Experience")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
+                </button>
+              </div>
+              <WorkExperienceSection
+                experiences={experiences}
+                onEdit={(exp) => {
+                  setEditingExperience(exp);
+                  setActiveModalTab("Add Work Experience");
+                }}
+                onAddNew={() => {
+                  setEditingExperience(null);
+                  setActiveModalTab("Add Work Experience");
+                }}
+              />
             </div>
 
             {/* Education Section */}
             <div className="bg-white rounded-md shadow-sm p-6 mt-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Education
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                  Education
+                </h2>
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Qualification")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
+                </button>
+              </div>
               <div className="space-y-4">
                 <EducationItem
                   title="MBBS"
@@ -623,8 +742,11 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   Skills / Specialization
                 </h2>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Pencil className="w-4 h-4" />
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Skills")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -645,8 +767,11 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   Certificates
                 </h2>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Pencil className="w-4 h-4" />
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Certifications")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -678,8 +803,11 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   Awards & Achievements
                 </h2>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Pencil className="w-4 h-4" />
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Awards & Achievements")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
               <div className="space-y-4">
@@ -707,8 +835,11 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   Publications
                 </h2>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Pencil className="w-4 h-4" />
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Extra Information")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
               <div className="space-y-4">
@@ -738,8 +869,11 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                 <h2 className="text-lg font-semibold text-gray-800">
                   Languages
                 </h2>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Pencil className="w-4 h-4" />
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  onClick={() => openModal("Extra Information")}
+                >
+                  <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
               <div className="space-y-3">
@@ -789,7 +923,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("Overview");
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen px-2 md:px-34 lg:px-44">
       {/* Header */}
       <header className="bg-white shadow-sm fixed inset-x-0 top-0 z-40 ">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center ">
@@ -824,7 +958,7 @@ const Profile = () => {
 
       <div className="flex pt-16">
         {/* Sidebar */}
-        <div className="w-1/5 bg-white fixed inset-y-0 left-0 z-30 p-4 overflow-y-auto mt-20 ml-7">
+        <div className="w-1/5 bg-white fixed inset-y-0  z-30 p-4 overflow-y-auto mt-20 ml-[-60px]">
           {/* Switch Card */}
           <div className="mx-1 p-3 bg-gray-50 border rounded-lg shadow-sm flex items-center justify-between mb-5 border-[#FFFFFF]">
             <div className="flex items-center space-x-3">
@@ -884,13 +1018,13 @@ const Profile = () => {
           <ProfileSection />
 
           {/* Tabs and Content (Standard Layout) */}
-          <div className="flex">
-            <div className="w-2/3 p-6">
+          <div className="flex gap-4">
+            <div className="w-2/3  ">
               <TabsSection activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 
             {/* Right Sidebar */}
-            <div className="w-1/3 p-6">
+            <div className="w-1/3 py-6">
               <div className="bg-white rounded-md shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-gray-800 mb-4">
                   About the Doctor
@@ -931,25 +1065,6 @@ const Profile = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-const NavItem = ({ icon, text, active = false }) => {
-  return (
-    <li>
-      <a
-        href="#"
-        className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm transition-all
-            ${
-              active
-                ? "bg-blue-100 text-blue-700"
-                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-            }`}
-      >
-        {icon}
-        <span>{text}</span>
-      </a>
-    </li>
   );
 };
 

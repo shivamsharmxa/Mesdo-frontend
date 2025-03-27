@@ -24,6 +24,8 @@ import About from "../pages/Recruiter/onboarding/About";
 import Location from "../pages/Recruiter/onboarding/Location";
 import Profile from "../pages/UserSide/Profile";
 import Interest from "../pages/onboarding/Interest";
+import RecruiterProfile from "../pages/Recruiter/profile/RecruiterProfile";
+import Messages from "../pages/UserSide/Messages";
 
 const AppRoutes = () => {
   return (
@@ -52,6 +54,8 @@ const AppRoutes = () => {
       <Route path="/location" element={<Location />} />
       <Route path="/Profile" element={<Profile />} />
       <Route path="/Interest" element={<Interest />} />
+      <Route path="/RecruiterProfile" element={<RecruiterProfile />} />
+      <Route path="/Messages" element={<Messages />} />
       <Route
         path="/OrganizationInformation"
         element={<OrganizationInformation />}
