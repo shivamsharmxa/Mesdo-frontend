@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PlusIcon, X, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Calendar } from "lucide-react";
 
 const PublicationForm = ({ achievement, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -8,13 +7,8 @@ const PublicationForm = ({ achievement, onSave, onCancel }) => {
     issuer: "",
     date: "",
     description: "",
-    highlights: [],
   });
 
-  const [highlightInput, setHighlightInput] = useState("");
-  const navigate = useNavigate();
-
-  // Pre-fill data if editing
   useEffect(() => {
     if (achievement) {
       setFormData({
@@ -22,15 +16,6 @@ const PublicationForm = ({ achievement, onSave, onCancel }) => {
         issuer: achievement.issuer || "",
         date: achievement.date || "",
         description: achievement.description || "",
-        highlights: achievement.highlights || [],
-      });
-    } else {
-      setFormData({
-        title: "",
-        issuer: "",
-        date: "",
-        description: "",
-        highlights: [],
       });
     }
   }, [achievement]);
@@ -40,122 +25,90 @@ const PublicationForm = ({ achievement, onSave, onCancel }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const addHighlight = () => {
-    if (highlightInput.trim() !== "") {
-      setFormData({
-        ...formData,
-        highlights: [...formData.highlights, highlightInput],
-      });
-      setHighlightInput("");
-    }
-  };
-
-  const removeHighlight = (index) => {
-    const updatedHighlights = formData.highlights.filter((_, i) => i !== index);
-    setFormData({ ...formData, highlights: updatedHighlights });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Left Side - Form */}
-      <div className="w-full h-full flex flex-col p-8">
-        {/* Title & Description */}
-        <h1 className="text-2xl font-semibold text-gray-900">
-          {achievement ? "Edit Achievement" : "Add Achievement"}
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Include all of your relevant achievements and dates in this section.
-        </p>
-
-        {/* Form Container with Scroll */}
-        <div className="mt-4 flex-1 overflow-auto pr-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Title and Issuer */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Title*
-                </label>
-                <input
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter title"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Publisher
-                </label>
-                <input
-                  name="issuer"
-                  value={formData.issuer}
-                  onChange={handleChange}
-                  required
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter issuer name"
-                />
-              </div>
-            </div>
-
-            {/* Date and Description */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">Year</label>
-                <input
-                  name="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows="3"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter description"
-                />
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-6 flex justify-between w-full">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm rounded-md hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="w-[120px] h-[40px] bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition"
-              >
-                {achievement ? "Update" : "Add"}
-              </button>
-            </div>
-          </form>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Award Name */}
+        <div>
+          <label className="block text-gray-700 text-sm mb-1">Title</label>
+          <input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            type="text"
+            className="w-full p-3 border border-gray-300 rounded-lg outline-none"
+            placeholder="Award Name"
+          />
         </div>
-      </div>
 
-      {/* Right Side - Empty Space */}
+        {/* Issuer and Year */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-gray-700 text-sm mb-1">Issuer</label>
+            <select
+              name="issuer"
+              value={formData.issuer}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg outline-none"
+            >
+              <option value="">Issued By</option>
+              <option value="University">University</option>
+              <option value="Organization">Organization</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-700 text-sm mb-1">Year</label>
+            <div className="relative">
+              <input
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg"
+                placeholder="Select Date"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-gray-700 text-sm mb-1">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows="4"
+            className="w-full p-3 border border-gray-300 rounded-lg outline-none"
+            placeholder="Enter Description"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-4 mt-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 bg-gray-100 text-blue-500 rounded-md hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            {achievement ? "Update" : "Add"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

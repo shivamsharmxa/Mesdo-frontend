@@ -402,20 +402,16 @@ const TabsSection = ({
     },
   ];
 
-  const publications = [
+  const [publications, setPublications] = useState([
     {
       title: "Advanced Techniques in Dental Surgery",
-      journal: "Journal of Dental Medicine",
-      date: "2023",
-      link: "#",
+      issuer: "Journal of Dental Medicine",
+      date: "2023-05-15",
+      description: "Published research on innovative surgical methods",
+      highlights: ["Peer-reviewed publication", "Cited 15+ times"],
     },
-    {
-      title: "Innovation in Dental Implants",
-      journal: "International Dental Research",
-      date: "2022",
-      link: "#",
-    },
-  ];
+    // Add more initial publications if needed
+  ]);
 
   const languages = [
     { language: "English", proficiency: "Native" },
@@ -839,10 +835,12 @@ const TabsSection = ({
                             </button>
                           </div>
                           <ExtraInformation
-                            initialLanguages={userLanguages} // Pass current languages
-                            onSave={(updatedLanguages) => {
-                              setUserLanguage(updatedLanguages); // Update the state
-                              setIsEditing(false); // Close the modal
+                            initialLanguages={userLanguages}
+                            initialPublications={publications} // Pass your publications array
+                            onSave={({ languages, publications }) => {
+                              setUserLanguages(languages);
+                              setPublications(publications); // Update parent state
+                              setIsEditing(false);
                             }}
                             onCancel={() => setIsEditing(false)}
                           />

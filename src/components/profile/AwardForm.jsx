@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PlusIcon, X, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { PlusIcon, X } from "lucide-react";
 
 const AwardForm = ({ achievement, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -12,7 +11,6 @@ const AwardForm = ({ achievement, onSave, onCancel }) => {
   });
 
   const [highlightInput, setHighlightInput] = useState("");
-  const navigate = useNavigate();
 
   // Pre-fill data if editing
   useEffect(() => {
@@ -23,14 +21,6 @@ const AwardForm = ({ achievement, onSave, onCancel }) => {
         date: achievement.date || "",
         description: achievement.description || "",
         highlights: achievement.highlights || [],
-      });
-    } else {
-      setFormData({
-        title: "",
-        issuer: "",
-        date: "",
-        description: "",
-        highlights: [],
       });
     }
   }, [achievement]);
@@ -61,136 +51,126 @@ const AwardForm = ({ achievement, onSave, onCancel }) => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Left Side - Form */}
-      <div className="w-full h-full flex flex-col p-8">
-        {/* Form Container with Scroll */}
-        <div className="mt-4 flex-1 overflow-auto pr-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Title and Issuer */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Title*
-                </label>
-                <input
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter title"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Issuer*
-                </label>
-                <input
-                  name="issuer"
-                  value={formData.issuer}
-                  onChange={handleChange}
-                  required
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter issuer name"
-                />
-              </div>
-            </div>
+    <div className="flex">
+      <div className="w-full flex flex-col p-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Award - Full width */}
+          <div>
+            <label className="block text-gray-700 text-sm mb-1">Award*</label>
+            <input
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded-md outline-none"
+              placeholder="Enter award title"
+            />
+          </div>
 
-            {/* Date and Description */}
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Date*
-                </label>
-                <input
-                  name="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700 text-sm mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows="3"
-                  className="w-full p-3 border border-gray-300 rounded-lg outline-none mb-3"
-                  placeholder="Enter description"
-                />
-              </div>
-            </div>
-
-            {/* Highlights */}
-            <div>
-              <label className="block text-gray-700 text-sm mb-2">
-                Highlights
+          {/* Issuer and Date in same line */}
+          <div className="flex gap-3">
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-sm mb-1">
+                Issuer*
               </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={highlightInput}
-                  onChange={(e) => setHighlightInput(e.target.value)}
-                  className="flex-1 p-3 border border-gray-300 rounded-lg outline-none"
-                  placeholder="Enter highlights"
-                />
-                <button
-                  type="button"
-                  onClick={addHighlight}
-                  className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center"
-                >
-                  <PlusIcon size={18} />
-                </button>
-              </div>
-
-              <ul className="space-y-2">
-                {formData.highlights.map((highlight, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between items-center text-sm bg-gray-100 p-3 rounded-lg"
-                  >
-                    {highlight}
-                    <button
-                      type="button"
-                      onClick={() => removeHighlight(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <X size={18} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <input
+                name="issuer"
+                value={formData.issuer}
+                onChange={handleChange}
+                required
+                type="text"
+                className="w-full p-2 border border-gray-300 rounded-md outline-none"
+                placeholder="Enter issuer name"
+              />
             </div>
+            <div className="w-1/2">
+              <label className="block text-gray-700 text-sm mb-1">Date*</label>
+              <input
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+                className="w-full p-2 border border-gray-300 rounded-md outline-none"
+              />
+            </div>
+          </div>
 
-            {/* Buttons */}
-            <div className="mt-6 flex justify-between w-full">
+          {/* Description - Full width */}
+          <div>
+            <label className="block text-gray-700 text-sm mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="2"
+              className="w-full p-2 h-30 border border-gray-300 rounded-md outline-none"
+              placeholder="Enter description"
+            />
+          </div>
+
+          {/* Highlights */}
+          {/* <div>
+            <label className="block text-gray-700 text-sm mb-1">
+              Highlights
+            </label>
+            <div className="flex gap-2 mb-1">
+              <input
+                type="text"
+                value={highlightInput}
+                onChange={(e) => setHighlightInput(e.target.value)}
+                className="flex-1 p-2 border border-gray-300 rounded-md outline-none"
+                placeholder="Enter highlights"
+              />
               <button
                 type="button"
-                onClick={onCancel}
-                className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm rounded-md hover:bg-gray-400 transition"
+                onClick={addHighlight}
+                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center justify-center"
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="w-[120px] h-[40px] bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition"
-              >
-                {achievement ? "Update" : "Add"}
+                <PlusIcon size={16} />
               </button>
             </div>
-          </form>
-        </div>
-      </div>
 
-      {/* Right Side - Empty Space */}
+            <ul className="space-y-1 max-h-[120px] overflow-y-auto">
+              {formData.highlights.map((highlight, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center text-xs bg-gray-100 p-2 rounded-md"
+                >
+                  {highlight}
+                  <button
+                    type="button"
+                    onClick={() => removeHighlight(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div> */}
+
+          {/* Buttons */}
+          <div className="mt-4 flex justify-between w-full">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="w-[100px] h-[32px] bg-[#F0F0F0] text-[#1890FF] text-xs rounded-md hover:bg-gray-200 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="w-[100px] h-[32px] bg-blue-500 text-white text-xs rounded-md hover:bg-blue-600 transition"
+            >
+              {achievement ? "Update" : "Add"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
