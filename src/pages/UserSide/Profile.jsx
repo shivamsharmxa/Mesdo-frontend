@@ -1,4 +1,6 @@
 import { useState } from "react";
+import mesdoLogo from "../../assets/mesdo_logo.jpeg";
+import HospitalIcon from "../../assets/HospitalIcon.png";
 import {
   Bell,
   MessageCircle,
@@ -73,7 +75,7 @@ const people = [
   },
 ];
 
-function ExperienceItem() {
+function ExperienceItem1() {
   return (
     <div className="flex items-start space-x-3">
       <Briefcase className="text-blue-500 w-10 h-10 mt-1" />
@@ -89,7 +91,20 @@ function ExperienceItem() {
     </div>
   );
 }
-
+function ExperienceItem2() {
+  return (
+    <div className="flex items-start space-x-3">
+      <Briefcase className="text-blue-500 w-10 h-10 mt-1" />
+      <div>
+        <p className="text-sm font-semibold text-gray-800">B.D.S & M.D.S</p>
+        <p className="text-sm text-gray-600">
+          Lorem ipsum description Lorem ipsum description Lorem ipsum
+          description
+        </p>
+      </div>
+    </div>
+  );
+}
 const TabsSection = ({
   activeTab,
   setActiveTab,
@@ -1126,9 +1141,14 @@ const Profile = () => {
     <div className="bg-gray-100 min-h-screen px-2 md:px-34 lg:px-44">
       {/* Header */}
       <header className="bg-white shadow-sm fixed inset-x-0 top-0 z-40 ">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center ">
-          <div className="flex items-center">
-            <span className="text-xl font-semibold">Mesdo</span>
+        <div className="container mx-auto px-4 py-4 ml-25 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <img
+              src={mesdoLogo}
+              alt="Mesdo Logo"
+              className="h-8 w-auto" // Adjust height as needed
+            />
+            <span className="text-xl font-semibold text-gray-800">Mesdo</span>
           </div>
           <div className="flex items-center flex-grow mx-4 ml-44">
             <div className="relative w-full">
@@ -1162,7 +1182,7 @@ const Profile = () => {
           {/* Switch Card */}
           <div className="mx-1 p-3 bg-gray-50 border rounded-lg shadow-sm flex items-center justify-between mb-5 border-[#FFFFFF]">
             <div className="flex items-center space-x-3">
-              <Settings className="h-8 w-8 text-blue-500" />
+              <img src={HospitalIcon}></img>
               <div>
                 <h2 className="text-sm font-medium text-gray-800">Hospital</h2>
                 <p className="text-[11px] text-gray-500 cursor-pointer hover:underline">
@@ -1230,8 +1250,8 @@ const Profile = () => {
                   About the Doctor
                 </h2>
                 <div className="space-y-4">
-                  <ExperienceItem />
-                  <ExperienceItem />
+                  <ExperienceItem1 />
+                  <ExperienceItem2 />
                 </div>
               </div>
               <div className="bg-white p-6 mt-6 rounded-lg shadow-md">
