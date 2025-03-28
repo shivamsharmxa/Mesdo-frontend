@@ -36,34 +36,9 @@ import ExtraInformation from "../../Components/profile/ExtraInformation";
 import AddQualification from "../../Components/profile/AddQualification";
 
 import WorkExperienceForm from "../../components/profile/WorkExperienceForm";
+import QualificationForm from "../../components/profile/QualificationForm";
 
-// import ReactQuill from "react-quill";
-//
-// import "react-quill/dist/quill.snow.css"; // Import Quill CSS
-
-// ReactQuill Modules & Formats
-// const modules = {
-//   toolbar: [
-//     [{ header: [1, 2, false] }],
-//     ["bold", "italic", "underline", "strike"],
-//     [{ list: "ordered" }, { list: "bullet" }],
-//     [{ align: [] }],
-//     ["link", "image"],
-//     ["clean"],
-//   ],
-// };
-// const formats = [
-//   "header",
-//   "bold",
-//   "italic",
-//   "underline",
-//   "strike",
-//   "list",
-//   "bullet",
-//   "align",
-//   "link",
-//   "image",
-// ];
+import AwardForm from "../../components/profile/AwardForm";
 
 const people = [
   {
@@ -138,7 +113,137 @@ const TabsSection = ({
   // Local state for editing (so changes don’t immediately reflect)
   const [editData, setEditData] = useState({ ...aboutData });
   const [editingExperience, setEditingExperience] = useState(null);
+  const [isEditingSkills, setIsEditingSkills] = useState(false);
+  const [userSkills, setUserSkills] = useState([
+    "CPR Certified",
+    "Patient Care",
+    "EMT",
+  ]);
+  const [userLanguage, setUserLanguage] = useState([
+    "Hindi",
+    "English",
+    "Spanish",
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [qualifications, setQualifications] = useState([]);
+  const [editingQualification, setEditingQualification] = useState(null);
+  const [editingAward, setEditingAward] = useState(null);
+  const [achievements, setAchievements] = useState([
+    {
+      id: 1,
+      title: "Certificate of Excellence",
+      issuer: "Coursera",
+      date: "2024-04-25",
+      description:
+        "Recognized for outstanding performance in the Advanced React course.",
+      highlights: [
+        "Completed the course with a top 5% rank.",
+        "Gained expertise in Redux and React Hooks.",
+      ],
+    },
+    {
+      id: 2,
+      title: "Best Frontend Developer Award",
+      issuer: "Techieshubhdeep IT Solutions",
+      date: "2023-12-10",
+      description:
+        "Awarded for exceptional contributions to frontend development projects.",
+      highlights: [
+        "Successfully delivered 5+ major client projects.",
+        "Enhanced application performance by 30%.",
+      ],
+    },
+    {
+      id: 3,
+      title: "JavaScript Mastery",
+      issuer: "Udemy",
+      date: "2022-11-15",
+      description:
+        "Completed advanced JavaScript training with hands-on projects.",
+      highlights: [
+        "Built 3 full-stack applications using JavaScript.",
+        "Mastered concepts like closures, promises, and async/await.",
+      ],
+    },
+  ]);
+
+  const [editingAchievement, setEditingAchievement] = useState(null);
+  const [activeAchievementTab, setActiveAchievementTab] = useState("Preview");
+  const [userLanguages, setUserLanguages] = useState([]);
+
+  // Save or Update Achievement
+  const handleSaveAchievement = (newAchievement) => {
+    if (editingAchievement) {
+      // Update existing achievement
+      setAchievements(
+        achievements.map((achievement) =>
+          achievement.id === editingAchievement.id
+            ? { ...newAchievement, id: editingAchievement.id }
+            : achievement
+        )
+      );
+    } else {
+      // Add new achievement
+      setAchievements([...achievements, { ...newAchievement, id: Date.now() }]);
+    }
+
+    // Reset editing state and modal tab
+    setEditingAchievement(null);
+    setActiveAchievementTab("Preview");
+  };
+
+  // Edit Achievement
+  const handleEditAchievement = (achievement) => {
+    setEditingAchievement(achievement);
+    setActiveAchievementTab("Edit");
+  };
+
+  // Delete Achievement
+  const handleDeleteAchievement = (id) => {
+    const updatedAchievements = achievements.filter(
+      (achievement) => achievement.id !== id
+    );
+    setAchievements(updatedAchievements);
+  };
+
+  // Cancel Action
+  const handleAward = () => {
+    setEditingAchievement(null);
+    setActiveAchievementTab("Preview");
+  };
+
+  const [activeQualificationTab, setActiveQualificationTab] =
+    useState("Preview");
+
+  const handleSaveQualification = (savedQualification) => {
+    if (editingQualification) {
+      // Update existing qualification
+      setQualifications(
+        qualifications.map((qual) =>
+          qual.id === savedQualification.id ? savedQualification : qual
+        )
+      );
+    } else {
+      // Add new qualification
+      setQualifications([
+        ...qualifications,
+        { ...savedQualification, id: Date.now() },
+      ]);
+    }
+    setEditingQualification(null);
+    setActiveQualificationTab("Preview");
+  };
+
+  const handleEditQualification = (qualification) => {
+    setEditingQualification(qualification);
+    setActiveQualificationTab("Edit");
+  };
+
+  const handleDeleteQualification = (id) => {
+    setQualifications(
+      qualifications.filter((qualification) => qualification.id !== id)
+    );
+  };
   const [experiences, setExperiences] = useState([
     // Your initial experiences data here
     {
@@ -211,6 +316,12 @@ const TabsSection = ({
   const handleCancel = () => {
     setActiveTab("workExperience");
   };
+  const handleSaveSkills = (updatedSkills) => {
+    setSkills(updatedSkills);
+    setIsEditing(false);
+    setActiveModalTab(null);
+    // Add API call here to save to backend if needed
+  };
 
   // Function to open the modal
   const openModal = (tab) => {
@@ -228,31 +339,38 @@ const TabsSection = ({
     "Extra Information",
   ];
 
-  const skills = [
-    "Laser Surgery",
-    "Dental Implants",
-    "Orthodontics",
-    "Root Canal",
-    "Cosmetic Dentistry",
-  ];
+  // const skills = [
+  //   "Laser Surgery",
+  //   "Dental Implants",
+  //   "Orthodontics",
+  //   "Root Canal",
+  //   "Cosmetic Dentistry",
+  // ];
 
-  const certificates = [
+  const [certificates, setCertificates] = useState([
     {
       id: 1,
-      title: "Certificate 1",
-      issuer: "Dental Association",
+      title: "CPR Certification",
+      issuer: "Medical Board",
       date: "2023",
-      image: "https://picsum.photos/100/60",
+      image: "https://picsum.photos/100/60?random=1",
+      size: "1.5 MB",
     },
     {
       id: 2,
-      title: "Certificate 2",
-      issuer: "Medical Board",
+      title: "Advanced Training",
+      issuer: "Dental Association",
       date: "2022",
-      image: "https://picsum.photos/100/60",
+      image: "https://picsum.photos/100/60?random=2",
+      size: "2.3 MB",
     },
-  ];
-
+  ]);
+  // Handle certificate updates
+  const handleSaveCertificates = (updatedCertificates) => {
+    setCertificates(updatedCertificates);
+    setIsEditingCertificates(false);
+  };
+  const [isEditingCertificates, setIsEditingCertificates] = useState(false);
   const awards = [
     {
       title: "Best Dental Surgeon",
@@ -524,31 +642,30 @@ const TabsSection = ({
                       )}
 
                       {activeModalTab === "Add Work Experience" && (
-                        <div className="fixed inset-0 bg-white/50 flex items-center justify-center z-50">
-                          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <div className="flex items-center justify-between p-4 border-b">
-                              <h3 className="text-lg font-semibold">
-                                {editingExperience
-                                  ? "Edit Work Experience"
-                                  : "Add Work Experience"}
-                              </h3>
-                              <button
-                                onClick={() =>
-                                  setActiveModalTab("Work Experience")
-                                }
-                                className="text-gray-500 hover:text-gray-700"
-                              >
-                                <X className="w-5 h-5" />
-                              </button>
-                            </div>
-                            <WorkExperienceForm
-                              experience={editingExperience}
-                              onSave={handleSaveExperience} // Use the proper save handler
-                              onCancel={() =>
+                        <div>
+                          {" "}
+                          <div className="flex items-center justify-between p-4 border-b">
+                            <h3 className="text-lg font-semibold">
+                              {editingExperience
+                                ? "Edit Work Experience"
+                                : "Add Work Experience"}
+                            </h3>
+                            <button
+                              onClick={() =>
                                 setActiveModalTab("Work Experience")
                               }
-                            />
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
                           </div>
+                          <WorkExperienceForm
+                            experience={editingExperience}
+                            onSave={handleSaveExperience} // Use the proper save handler
+                            onCancel={() =>
+                              setActiveModalTab("Work Experience")
+                            }
+                          />
                         </div>
                       )}
                       {activeModalTab === "Qualification" && (
@@ -579,7 +696,23 @@ const TabsSection = ({
                                 Add
                               </button>
                             </div>
-                            <QualificationsPreview />{" "}
+                            <div>
+                              {activeQualificationTab === "Edit" ? (
+                                <QualificationForm
+                                  qualification={editingQualification}
+                                  onSave={handleSaveQualification}
+                                  onCancel={() =>
+                                    setActiveQualificationTab("Preview")
+                                  }
+                                />
+                              ) : (
+                                <QualificationsPreview
+                                  qualifications={qualifications}
+                                  onEdit={handleEditQualification}
+                                  onDelete={handleDeleteQualification}
+                                />
+                              )}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -616,15 +749,18 @@ const TabsSection = ({
                               <X className="w-5 h-5" />
                             </button>
                           </div>
-                          <CertificateList />
+                          <CertificateList
+                            certificates={certificates}
+                            onSave={handleSaveCertificates}
+                            onCancel={() => setIsEditingCertificates(false)}
+                          />
                         </div>
                       )}
                       {activeModalTab === "Skills" && (
                         <div>
-                          {" "}
                           <div className="flex items-center flex-col justify-between p-4 border-b">
-                            <div className="flex flex-row  justify-between w-full">
-                              <h3 className="text-lg font-semibold">Skill</h3>
+                            <div className="flex flex-row justify-between w-full">
+                              <h3 className="text-lg font-semibold">Skills</h3>
                               <button
                                 onClick={() => setIsEditing(false)}
                                 className="text-gray-500 hover:text-gray-700"
@@ -632,7 +768,14 @@ const TabsSection = ({
                                 <X className="w-5 h-5" />
                               </button>
                             </div>
-                            <SkillsSpecialization />
+                            <SkillsSpecialization
+                              initialSkills={userSkills}
+                              onSaveSkills={(updatedSkills) => {
+                                setUserSkills(updatedSkills); // Update the state
+                                setIsEditing(false); // Close the modal
+                              }}
+                              onCancel={() => setIsEditing(false)}
+                            />
                           </div>
                         </div>
                       )}
@@ -650,7 +793,20 @@ const TabsSection = ({
                               <X className="w-5 h-5" />
                             </button>
                           </div>
-                          <AchievementPreview />
+                          {activeAchievementTab === "Edit" ? (
+                            <AwardForm
+                              achievement={editingAchievement}
+                              onSave={handleSaveAchievement}
+                              onCancel={handleAward}
+                            />
+                          ) : (
+                            <AchievementPreview
+                              achievements={achievements}
+                              onEdit={handleEditAchievement}
+                              onDelete={handleDeleteAchievement}
+                              onAdd={() => setActiveAchievementTab("Edit")}
+                            />
+                          )}
                         </div>
                       )}
                       {activeModalTab === "Extra Information" && (
@@ -667,7 +823,14 @@ const TabsSection = ({
                               <X className="w-5 h-5" />
                             </button>
                           </div>
-                          <ExtraInformation />
+                          <ExtraInformation
+                            initialLanguages={userLanguages} // Pass current languages
+                            onSave={(updatedLanguages) => {
+                              setUserLanguage(updatedLanguages); // Update the state
+                              setIsEditing(false); // Close the modal
+                            }}
+                            onCancel={() => setIsEditing(false)}
+                          />
                         </div>
                       )}
                       {activeModalTab === "Work Experience preview" && (
@@ -722,18 +885,31 @@ const TabsSection = ({
                 </button>
               </div>
               <div className="space-y-4">
-                <EducationItem
-                  title="MBBS"
-                  institute="XYZ University"
-                  date="2010 - 2015"
-                  description="Lorem ipsum dolor sit amet consectetur. Quis auctor eu nisl amet consectetur et. Nisl sit pellentesque sit in euismod. Sit amet risus sit lorem."
-                />
-                <EducationItem
-                  title="MD"
-                  institute="ABC University"
-                  date="2015 - 2018"
-                  description="Lorem ipsum dolor sit amet consectetur. Quis auctor eu nisl amet consectetur et. Nisl sit pellentesque sit in euismod. Sit amet risus sit lorem."
-                />
+                {qualifications.map((qualification, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start space-x-4 p-4 border border-gray-300 rounded-lg"
+                  >
+                    <div className="bg-blue-200 w-10 h-10 flex justify-center items-center rounded-lg">
+                      <AwardIcon className="text-gray-500" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold">
+                        {qualification.qualification}
+                      </h3>
+                      <p className="text-gray-500">{qualification.course}</p>
+                      <p className="text-gray-500 text-sm">
+                        {qualification.passingYear}
+                      </p>
+                      <ul className="list-disc pl-5 mt-2 text-gray-700 text-sm">
+                        <li>{qualification.specialization}</li>
+                        <li>{qualification.university}</li>
+                        <li>{qualification.skill}</li>
+                      </ul>
+                    </div>
+                    <div className="flex space-x-2"></div>
+                  </div>
+                ))}
               </div>
             </div>
             {/* Skills/Specialization Section */}
@@ -750,14 +926,18 @@ const TabsSection = ({
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {skills.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {userSkills.length > 0 ? (
+                  userSkills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">No skills added yet</p>
+                )}
               </div>
             </div>
 
@@ -811,27 +991,45 @@ const TabsSection = ({
                 </button>
               </div>
               <div className="space-y-4">
-                {awards.map((award, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <Award className="w-5 h-5 text-blue-500 mt-1" />
-                    <div>
-                      <h3 className="font-medium text-gray-900">
-                        {award.title}
-                      </h3>
-                      <p className="text-sm text-gray-600">{award.issuer}</p>
-                      <p className="text-sm text-gray-500">{award.date}</p>
-                      <p className="text-sm text-gray-700 mt-1">
-                        {award.description}
-                      </p>
+                {achievements.length > 0 ? (
+                  achievements.map((achievement) => (
+                    <div
+                      key={achievement.id}
+                      className="flex items-start space-x-4 p-4 rounded-lg shadow-sm p-4 bg-gray-50"
+                    >
+                      <div className="bg-blue-200 w-10 h-10 flex justify-center items-center rounded-lg">
+                        <AwardIcon className="text-gray-500" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{achievement.title}</h3>
+                        <p className="text-gray-500 text-sm">
+                          Issued by - {achievement.issuer}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          {achievement.date}
+                        </p>
+                        <p className="mt-2 text-sm">
+                          {achievement.description}
+                        </p>
+                        <ul className="list-disc px-6 mt-2 text-sm">
+                          {achievement.highlights.map((highlight, index) => (
+                            <li key={index}>{highlight}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    No achievements added yet.
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Publications Section */}
             <div className="bg-white rounded-md shadow-sm p-6 mt-6">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 ">
                 <h2 className="text-lg font-semibold text-gray-800">
                   Publications
                 </h2>
@@ -844,7 +1042,10 @@ const TabsSection = ({
               </div>
               <div className="space-y-4">
                 {publications.map((pub, index) => (
-                  <div key={index} className="flex items-start space-x-3">
+                  <div
+                    key={index}
+                    className="flex items-start space-x-3 rounded-lg shadow-sm p-4 bg-gray-50"
+                  >
                     <BookOpen className="w-5 h-5 text-blue-500 mt-1" />
                     <div>
                       <h3 className="font-medium text-gray-900">{pub.title}</h3>
@@ -876,22 +1077,21 @@ const TabsSection = ({
                   <Pencil className="w-5 h-5 text-gray-700" />
                 </button>
               </div>
-              <div className="space-y-3">
-                {languages.map((lang, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <Globe className="w-5 h-5 text-blue-500" />
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium text-gray-900">
-                          {lang.language}
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          {lang.proficiency}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="flex flex-wrap gap-2">
+                {userLanguage.length > 0 ? (
+                  userLanguage.map((language, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    >
+                      {language}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    No languages added yet
+                  </p>
+                )}
               </div>
             </div>
           </div>
