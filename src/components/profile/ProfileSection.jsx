@@ -1,44 +1,61 @@
-import { MessageCircle, MoreHorizontal } from "lucide-react";
+import { MessageCircle, MoreHorizontal, Pencil } from "lucide-react";
 
 const ProfileSection = () => {
   return (
     <div className="w-full">
       {/* Cover Photo */}
-      <div className="bg-blue-500 h-48 rounded-t-lg relative">
+      <div className="h-[200px] relative">
         <img
-          src="https://picsum.photos/1200/300"
-          alt="Cover Photo"
-          className="w-full h-full object-cover rounded-t-lg"
+          src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+          alt="Cover"
+          className="w-full h-full object-cover"
         />
       </div>
 
-      {/* Profile Info */}
-      <div className="bg-white p-6 rounded-b-lg shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              alt="Profile Picture"
-              className="w-24 h-24 rounded-full mr-6 -mt-2 border-4 border-white"
-              src="https://picsum.photos/100"
-              width="100"
-              height="100"
-            />
+      {/* Profile Info Container */}
+      <div className="bg-white px-8 py-4 shadow-sm">
+        <div className="flex justify-between items-center">
+          {/* Profile Info Left */}
+          <div className="flex items-center gap-6">
+            {/* Profile Picture */}
+            <div className="relative -mt-16">
+              <img
+                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+                alt="Dr. Rahul Sharma"
+                className="w-[140px] h-[140px] rounded-full border-4 border-white object-cover"
+              />
+              <div className="absolute bottom-3 right-3 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+            </div>
+
+            {/* Name and Title */}
             <div>
-              <h2 className="text-2xl font-semibold">Dr. Rahul Sharma</h2>
-              <p className="text-gray-600 text-sm">
-                Heart Specialist at Medico
+              <h1 className="text-2xl font-semibold text-gray-900">
+                Dr. Rahul Sharma
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Dental Surgeon | Apollo Hospital
+              </p>
+              <p className="text-blue-500 mt-2 text-sm cursor-pointer hover:underline">
+                533 Connections
               </p>
             </div>
           </div>
-          <div className="flex mt-4 items-center">
-            <button className="bg-gray-200 p-2 rounded mr-2 hover:bg-gray-300 transition duration-300">
-              <MoreHorizontal className="text-gray-700 w-5 h-5" />
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            <button className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors">
+              <Pencil className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="bg-blue-500 text-sm text-white px-4 py-2 rounded flex mr-2 hover:bg-blue-600 transition duration-300">
-              <span className="w-4 h-4 mr-1">+</span> Follow
+            <button className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors">
+              <MoreHorizontal className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="bg-gray-200 text-sm text-gray-700 px-4 py-2 rounded flex items-center mr-2 hover:bg-gray-300 transition duration-300">
-              <MessageCircle className="w-4 h-4 mr-1" /> Message
+            <button className="h-10 bg-[#1890FF] text-white px-5 rounded-lg flex items-center gap-1 hover:bg-gray-200 transition-colors font-medium">
+              <span className="text-lg leading-none">+</span>
+              Follow
+            </button>
+            <button className="h-10 bg-gray-100 text-gray-900 px-5 rounded-lg flex items-center gap-2 hover:bg-gray-200 transition-colors font-medium">
+              <MessageCircle className="w-4 h-4" />
+              Message
             </button>
           </div>
         </div>
