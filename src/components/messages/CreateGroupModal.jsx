@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { Search, X, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AddGroupModal from "./AddGroupModal";
+import NewGroupModal from "./NewGroupModal"; // Import the NewGroupModal component
 
 const CreateGroupModal = ({ isOpen, onClose, users }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(isOpen);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false); // New state for the new group modal
+  const [groupName, setGroupName] = useState(""); // Holds group name
+  const [description, setDescription] = useState(""); // Holds group description
 
   useEffect(() => {
     setIsVisible(isOpen);
@@ -21,10 +25,16 @@ const CreateGroupModal = ({ isOpen, onClose, users }) => {
     setTimeout(onClose, 300);
   };
 
+  const handleCreateGroup = () => {
+    // Close the new group modal and open the add group modal
+    setIsNewGroupModalOpen(false);
+    setIsGroupModalOpen(true);
+  };
+
   return (
     <>
       <AnimatePresence>
-        {isVisible && !isGroupModalOpen && (
+        {isVisible && !isGroupModalOpen && !isNewGroupModalOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -71,7 +81,7 @@ const CreateGroupModal = ({ isOpen, onClose, users }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
                 className="p-4 border-b hover:bg-gray-50 cursor-pointer"
-                onClick={() => setIsGroupModalOpen(true)}
+                onClick={() => setIsNewGroupModalOpen(true)} // Open the new group modal
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -114,6 +124,16 @@ const CreateGroupModal = ({ isOpen, onClose, users }) => {
         )}
       </AnimatePresence>
 
+      {/* New Group Modal */}
+      <NewGroupModal
+        isOpen={isNewGroupModalOpen}
+        onClose={() => setIsNewGroupModalOpen(false)}
+        onCreate={() => {
+          setIsNewGroupModalOpen(false); // Close NewGroupModal
+          setIsGroupModalOpen(true); // Open AddGroupModal
+        }}
+      />
+      {/* Add Group Modal */}
       <AddGroupModal
         isOpen={isGroupModalOpen}
         onClose={() => setIsGroupModalOpen(false)}

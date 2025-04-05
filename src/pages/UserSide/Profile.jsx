@@ -319,24 +319,6 @@ const TabsSection = ({
     setEditingExperience(null);
     setActiveModalTab("Work Experience"); // Return to list view
   };
-  const handleEdit = (experience) => {
-    setEditingExperience(experience);
-    setActiveTab("editExperience");
-  };
-  const handleClose = () => {
-    setIsModalOpen(false); // Ensure the modal is closed
-    setActiveTab("workExperience"); // Reset tab if needed
-  };
-
-  const handleCancel = () => {
-    setActiveTab("workExperience");
-  };
-  const handleSaveSkills = (updatedSkills) => {
-    setSkills(updatedSkills);
-    setIsEditing(false);
-    setActiveModalTab(null);
-    // Add API call here to save to backend if needed
-  };
 
   // Function to open the modal
   const openModal = (tab) => {
@@ -386,21 +368,6 @@ const TabsSection = ({
     setIsEditingCertificates(false);
   };
   const [isEditingCertificates, setIsEditingCertificates] = useState(false);
-  const awards = [
-    {
-      title: "Best Dental Surgeon",
-      issuer: "Medical Excellence Awards",
-      date: "2023",
-      description:
-        "Recognized for outstanding contribution in dental surgery and patient care",
-    },
-    {
-      title: "Research Excellence",
-      issuer: "Dental Research Institute",
-      date: "2022",
-      description: "Award for innovative research in dental implant techniques",
-    },
-  ];
 
   const [publications, setPublications] = useState([
     {
@@ -412,12 +379,6 @@ const TabsSection = ({
     },
     // Add more initial publications if needed
   ]);
-
-  const languages = [
-    { language: "English", proficiency: "Native" },
-    { language: "Hindi", proficiency: "Professional" },
-    { language: "Spanish", proficiency: "Intermediate" },
-  ];
 
   return (
     <div className="mt-6">

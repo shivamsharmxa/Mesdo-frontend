@@ -1,12 +1,13 @@
 import NavItem from "./NavItem";
 import { Settings } from "lucide-react";
+import HospitalIcon from "../../assets/HospitalIcon.png";
 
 const Sidebar = () => {
   return (
     <div className="w-70 ml-15 bg-white fixed inset-y-0 left-0 z-30 p-4 overflow-y-auto mt-24 mb-9">
       <div className="mx-1 p-3 bg-gray-50 border rounded-lg shadow-sm flex items-center justify-between mb-5 border-[#FFFFFF]">
         <div className="flex items-center space-x-3">
-          <Settings className="h-8 w-8 text-blue-500" />
+          <img src={HospitalIcon}></img>
           <div>
             <h2 className="text-sm font-medium text-gray-800">Hospital</h2>
             <p className="text-[11px] text-gray-500 cursor-pointer hover:underline">

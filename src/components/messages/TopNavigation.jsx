@@ -1,11 +1,18 @@
 import { Search, Bell } from "lucide-react";
+import MesdoLogo from "../../assets/mesdo_logo.jpeg"; // Adjust the path as necessary
 
 const TopNavigation = () => {
   return (
     <div className="fixed top-2 left-0 right-0 h-16 bg-white border-b border-gray-200 flex justify-between items-center px-4 z-10 md:px-34 lg:px-44">
-      <div className="flex items-center">
-        <span className="text-xl font-semibold">Mesdo</span>
+      <div className="flex items-center gap-2 -ml-25">
+        <img
+          src={MesdoLogo}
+          alt="Mesdo Logo"
+          className="w-8 h-8 object-contain"
+        />
+        <span className="text-xl font-semibold text-gray-900">Mesdo</span>
       </div>
+
       <div className="flex items-center flex-grow mx-4 ml-44">
         <div className="relative w-full">
           <Search

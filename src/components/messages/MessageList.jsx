@@ -10,8 +10,22 @@ const MessageList = ({
   setSelectedUser,
   activeTab,
   setActiveTab,
+  onCreateGroup,
 }) => {
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+
+  // Filter users based on active tab
+  const filteredUsers = users.filter((user) => {
+    switch (activeTab) {
+      case "Jobs":
+        return user.category === "job"; // Assuming users have a category field
+      case "Groups":
+        return user.isGroup; // Assuming groups have isGroup flag
+      case "Personal":
+      default:
+        return !user.isGroup && user.category !== "job";
+    }
+  });
 
   return (
     <div className="w-[360px] bg-white border-r border-gray-200 flex flex-col">
@@ -24,18 +38,19 @@ const MessageList = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#1890FF] w-5 h-5" />
             <input
               type="text"
-              placeholder="Search"
+              placeholder={`Search ${activeTab.toLowerCase()}...`}
               className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-lg focus:outline-none"
             />
           </div>
 
-          {/* Create Message Button */}
+          {/* Show create button only for Groups tab */}
+
           <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            onClick={() => setShowCreateGroupModal(true)} // Connect to state
-            aria-label="Create new message"
+            onClick={() => setShowCreateGroupModal(true)} // Opens CreateGroupModal
+            aria-label="Create new chat or group"
           >
-            <img src={CreateMessage} alt="Create message" className="w-5 h-5" />
+            <img src={CreateMessage} alt="Create" className="w-5 h-5" />
           </button>
         </div>
 
@@ -58,23 +73,41 @@ const MessageList = ({
 
         <div className="flex items-center mb-4">
           <ArrowLeft className="w-6 h-6 text-gray-600" />
-          <span className="ml-2 text-gray-600">Messages</span>
+          <span className="ml-2 text-gray-600">{activeTab} Messages</span>
         </div>
       </div>
 
-      {/* User List */}
+      {/* User List - shows different content based on active tab */}
       <div className="flex-1 overflow-y-auto">
-        {users.map((user) => (
-          <UserListItem
-            key={user.id}
-            user={user}
-            selectedUser={selectedUser}
-            onClick={() => setSelectedUser(user)}
-          />
-        ))}
+        {activeTab === "Groups" && filteredUsers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <p className="mb-2">No groups yet</p>
+            <button
+              onClick={onCreateGroup}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Create new group"
+            >
+              <img src={CreateMessage} alt="Create group" className="w-5 h-5" />
+            </button>
+          </div>
+        ) : filteredUsers.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-gray-500">
+            No {activeTab.toLowerCase()} messages
+          </div>
+        ) : (
+          filteredUsers.map((user) => (
+            <UserListItem
+              key={user.id}
+              user={user}
+              selectedUser={selectedUser}
+              onClick={() => setSelectedUser(user)}
+              isGroup={activeTab === "Groups"} // Pass group flag to list item
+            />
+          ))
+        )}
       </div>
 
-      {/* Modal - moved outside all other containers */}
+      {/* Group Creation Modal - only relevant for Groups tab */}
       <CreateGroupModal
         isOpen={showCreateGroupModal}
         onClose={() => setShowCreateGroupModal(false)}

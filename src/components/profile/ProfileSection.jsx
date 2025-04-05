@@ -36,7 +36,7 @@ const ProfileSection = () => {
                 Dental Surgeon | Apollo Hospital
               </p>
               <p className="text-blue-500 mt-2 text-sm cursor-pointer hover:underline">
-                533 Connections
+                10k Followers
               </p>
             </div>
           </div>

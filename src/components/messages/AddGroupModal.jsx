@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Search, UserPlus, X } from "lucide-react";
 import GroupDetails from "./GroupDetails";
 
