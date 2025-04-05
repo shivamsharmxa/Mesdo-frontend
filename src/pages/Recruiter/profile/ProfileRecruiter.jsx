@@ -80,6 +80,280 @@ const InfoItem = ({ label, value, isLink = false }) => (
   </div>
 );
 
+const MoreInformationForm = ({ infoData, onSave, onCancel }) => {
+  const [formData, setFormData] = useState(infoData);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  return (
+    <div className="p-6 space-y-4">
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Website
+        </label>
+        <input
+          type="text"
+          name="website"
+          value={formData.website}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Organization Size
+        </label>
+        <input
+          type="text"
+          name="organizationSize"
+          value={formData.organizationSize}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Type
+        </label>
+        <input
+          type="text"
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Founded
+        </label>
+        <input
+          type="text"
+          name="founded"
+          value={formData.founded}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Industry
+        </label>
+        <input
+          type="text"
+          name="industry"
+          value={formData.industry}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Socials
+        </label>
+        <input
+          type="text"
+          name="socials"
+          value={formData.socials}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+      </div>
+      <div className="mt-6 flex justify-end space-x-3">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => onSave(formData)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const AddressSection = ({ addresses, onEdit }) => {
+  const mainBranch = addresses.find((addr) => addr.isMain) || addresses[0];
+  const otherBranches = addresses.filter((addr) => !addr.isMain);
+
+  const openGoogleMaps = (address) => {
+    const encodedAddress = encodeURIComponent(address);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
+      "_blank"
+    );
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-7">
+      <div
+        className="w-full h-48 bg-gray-200 cursor-pointer relative"
+        onClick={() => openGoogleMaps(mainBranch.address)}
+      >
+        <iframe
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          style={{ border: 0 }}
+          src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(
+            mainBranch.address
+          )}`}
+          allowFullScreen
+        ></iframe>
+      </div>
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">
+            Address ({addresses.length})
+          </h2>
+          <button
+            onClick={onEdit}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="mb-4">
+          <h3 className="text-sm font-sm">Main Branch</h3>
+          <div
+            className="flex items-start mt-2 cursor-pointer hover:text-blue-500"
+            onClick={() => openGoogleMaps(mainBranch.address)}
+          >
+            <MapPin className="text-gray-500 mt-1" />
+            <p className="ml-2 text-gray-700 font-sm text-[14px]">
+              {mainBranch.address}
+            </p>
+          </div>
+        </div>
+        {otherBranches.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-sm font-sm">Other Branches</h3>
+            {otherBranches.map((branch, index) => (
+              <div
+                key={index}
+                className="flex items-start mt-2 cursor-pointer hover:text-blue-500"
+                onClick={() => openGoogleMaps(branch.address)}
+              >
+                <MapPin className="text-gray-500 mt-1" />
+                <p className="ml-2 text-gray-700 text-[14px]">
+                  {branch.address}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+        <a className="text-blue-500 hover:underline flex items-center" href="#">
+          See All
+          <ChevronRight className="w-4 h-4 ml-1" />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const AddressForm = ({ addresses, onSave, onCancel }) => {
+  const [formData, setFormData] = useState(addresses);
+
+  const handleChange = (index, field, value) => {
+    const newAddresses = [...formData];
+    newAddresses[index][field] = value;
+    setFormData(newAddresses);
+  };
+
+  const addNewAddress = () => {
+    setFormData([
+      ...formData,
+      {
+        address: "",
+        isMain: false,
+      },
+    ]);
+  };
+
+  const removeAddress = (index) => {
+    const newAddresses = formData.filter((_, i) => i !== index);
+    setFormData(newAddresses);
+  };
+
+  const setAsMain = (index) => {
+    const newAddresses = formData.map((addr, i) => ({
+      ...addr,
+      isMain: i === index,
+    }));
+    setFormData(newAddresses);
+  };
+
+  return (
+    <div className="p-6 space-y-4">
+      {formData.map((address, index) => (
+        <div key={index} className="border border-gray-200 rounded-lg p-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-sm font-medium">
+              {address.isMain ? "Main Branch" : `Branch ${index + 1}`}
+            </h3>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setAsMain(index)}
+                className={`text-xs px-2 py-1 rounded ${
+                  address.isMain
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {address.isMain ? "Main" : "Set as Main"}
+              </button>
+              <button
+                onClick={() => removeAddress(index)}
+                className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+          <textarea
+            value={address.address}
+            onChange={(e) => handleChange(index, "address", e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            rows="3"
+            placeholder="Enter full address"
+          />
+        </div>
+      ))}
+
+      <button
+        onClick={addNewAddress}
+        className="flex items-center gap-2 text-blue-500 text-sm mt-2"
+      >
+        <Plus className="w-4 h-4" />
+        Add Another Address
+      </button>
+
+      <div className="mt-6 flex justify-end space-x-3">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => onSave(formData)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const TabsSection = ({ activeTab, setActiveTab }) => {
   const tabs = ["Overview", "Jobs", "People", "Connection"];
   const [isEditing, setIsEditing] = useState(false);
@@ -91,6 +365,24 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
     Committed to continuous learning, mentorship, and contributing to the medical 
     community through research publications and healthcare initiatives.`,
   });
+  const [moreInfo, setMoreInfo] = useState({
+    website: "www.apollo.com",
+    organizationSize: "1000-5000",
+    type: "Public",
+    founded: "1999",
+    industry: "Hospital & Healthcare",
+    socials: "Hospital & Healthcare",
+  });
+  const [addresses, setAddresses] = useState([
+    {
+      address: "Apollo Hospitals Hyderabad Hyderabad, Telangana 500033, IN",
+      isMain: true,
+    },
+    {
+      address: "Apollo Hospitals Mumbai Mumbai, Maharashtra 400001, IN",
+      isMain: false,
+    },
+  ]);
   const [editData, setEditData] = useState({ ...aboutData });
   const [editingExperience, setEditingExperience] = useState(null);
   const [userSkills, setUserSkills] = useState([
@@ -154,12 +446,28 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
     setActiveModalTab("Jobs");
   };
 
+  const handleSaveMoreInfo = (updatedInfo) => {
+    setMoreInfo(updatedInfo);
+    setIsEditing(false);
+  };
+
+  const handleSaveAddresses = (updatedAddresses) => {
+    setAddresses(updatedAddresses);
+    setIsEditing(false);
+  };
+
   const openModal = (tab) => {
     setIsEditing(true);
     setActiveModalTab(tab);
   };
 
-  const ModalTabs = ["About", "Jobs", "Specialities"];
+  const ModalTabs = [
+    "About",
+    "Jobs",
+    "Specialities",
+    "More Information",
+    "Addresses",
+  ];
 
   return (
     <div className="mt-6">
@@ -546,6 +854,46 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                     />
                   </div>
                 )}
+
+                {activeModalTab === "More Information" && (
+                  <div>
+                    <div className="flex items-center justify-between p-4 border-b">
+                      <h3 className="text-lg font-semibold">
+                        More Information
+                      </h3>
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <MoreInformationForm
+                      infoData={moreInfo}
+                      onSave={handleSaveMoreInfo}
+                      onCancel={() => setIsEditing(false)}
+                    />
+                  </div>
+                )}
+
+                {activeModalTab === "Addresses" && (
+                  <div>
+                    <div className="flex items-center justify-between p-4 border-b">
+                      <h3 className="text-lg font-semibold">Addresses</h3>
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <AddressForm
+                      addresses={addresses}
+                      onSave={handleSaveAddresses}
+                      onCancel={() => setIsEditing(false)}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -557,6 +905,36 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
 
 const ProfileRecruiter = () => {
   const [activeTab, setActiveTab] = useState("Overview");
+  const [moreInfo, setMoreInfo] = useState({
+    website: "www.apollo.com",
+    organizationSize: "1000-5000",
+    type: "Public",
+    founded: "1999",
+    industry: "Hospital & Healthcare",
+    socials: "Hospital & Healthcare",
+  });
+  const [addresses, setAddresses] = useState([
+    {
+      address: "Apollo Hospitals Hyderabad Hyderabad, Telangana 500033, IN",
+      isMain: true,
+    },
+    {
+      address: "Apollo Hospitals Mumbai Mumbai, Maharashtra 400001, IN",
+      isMain: false,
+    },
+  ]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [activeModalTab, setActiveModalTab] = useState("");
+
+  const handleSaveMoreInfo = (updatedInfo) => {
+    setMoreInfo(updatedInfo);
+    setIsEditing(false);
+  };
+
+  const handleSaveAddresses = (updatedAddresses) => {
+    setAddresses(updatedAddresses);
+    setIsEditing(false);
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen px-2 md:px-34 lg:px-44">
@@ -665,73 +1043,127 @@ const ProfileRecruiter = () => {
                   <h2 className="text-[16px] font-semibold text-gray-900">
                     More Information
                   </h2>
-                  <button className="text-gray-400 hover:text-gray-600">
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setActiveModalTab("More Information");
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
                     <Edit className="w-4 h-4" />
                   </button>
                 </div>
                 <div className="space-y-4">
-                  <InfoItem label="Website" value="www.apollo.com" isLink />
-                  <InfoItem label="Organization Size" value="1000-5000" />
-                  <InfoItem label="Type" value="Public" />
-                  <InfoItem label="Founded" value="1999" />
-                  <InfoItem label="Industry" value="Hospital & Healthcare" />
-                  <InfoItem label="Socials" value="Hospital & Healthcare" />
+                  <InfoItem label="Website" value={moreInfo.website} isLink />
+                  <InfoItem
+                    label="Organization Size"
+                    value={moreInfo.organizationSize}
+                  />
+                  <InfoItem label="Type" value={moreInfo.type} />
+                  <InfoItem label="Founded" value={moreInfo.founded} />
+                  <InfoItem label="Industry" value={moreInfo.industry} />
+                  <InfoItem label="Socials" value={moreInfo.socials} />
                 </div>
               </div>
 
-              <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-7">
-                <img
-                  alt="Map showing the location of the branches"
-                  className="w-full h-48 object-cover"
-                  height="200"
-                  src="https://storage.googleapis.com/a1aa/image/UON34o44GtUuLhUko-NgbOZtFjGoTkCqN7k1OGTaHPg.jpg"
-                  width="600"
-                />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-4">Address (10)</h2>
-                  <div className="mb-4">
-                    <h3 className="text-sm font-sm">Main Branch</h3>
-                    <div className="flex items-start mt-2">
-                      <i className="fas fa-map-marker-alt text-gray-500 mt-1"></i>
-                      <MapPin />
-                      <p className="ml-2 text-gray-700 font-sm text-[14px]">
-                        Apollo Hospitals Hyderabad Hyderabad, Telangana 500033,
-                        IN
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="text-sm font-sm">Other Branch</h3>
-                    <div className="flex items-start mt-2">
-                      <i className="fas fa-map-marker-alt text-gray-500 mt-1"></i>
-                      <MapPin />
-                      <p className="ml-2 text-gray-700 text-[14px]">
-                        Apollo Hospitals Hyderabad Hyderabad, Telangana 500033,
-                        IN
-                      </p>
-                    </div>
-                    <div className="flex items-start mt-2">
-                      <i className="fas fa-map-marker-alt text-gray-500 mt-1"></i>
-                      <MapPin />
-                      <p className="ml-2 text-gray-700 text-[14px]">
-                        Apollo Hospitals Hyderabad Hyderabad, Telangana 500033,
-                        IN
-                      </p>
-                    </div>
-                  </div>
-                  <a
-                    className="text-blue-500 hover:underline flex items-center"
-                    href="#"
-                  >
-                    See All
-                    <i className="fas fa-arrow-right ml-1"></i>
-                  </a>
-                </div>
-              </div>
+              <AddressSection
+                addresses={addresses}
+                onEdit={() => {
+                  setIsEditing(true);
+                  setActiveModalTab("Addresses");
+                }}
+              />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/50 bg-opacity-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex flex-col md:flex-row gap-6 px-3 py-4">
+              {/* Sidebar Menu */}
+              <div className="w-full md:w-1/4 lg:w-1/5">
+                <h3 className="text-lg font-semibold px-4 py-3 text-gray-800">
+                  Overview
+                </h3>
+                <ul className="">
+                  <li className="w-full">
+                    <button
+                      className={`w-full h-14 text-left px-4 py-3 text-sm font-medium border-[1px] border-gray-200 transition-all duration-300
+                        ${
+                          activeModalTab === "More Information"
+                            ? "bg-[#1890ff] text-white"
+                            : "text-gray-700 hover:bg-[#1890ff] hover:text-white"
+                        }`}
+                      onClick={() => setActiveModalTab("More Information")}
+                    >
+                      More Information
+                    </button>
+                  </li>
+                  <li className="w-full">
+                    <button
+                      className={`w-full h-14 text-left px-4 py-3 text-sm font-medium border-[1px] border-gray-200 transition-all duration-300
+                        ${
+                          activeModalTab === "Addresses"
+                            ? "bg-[#1890ff] text-white"
+                            : "text-gray-700 hover:bg-[#1890ff] hover:text-white"
+                        }`}
+                      onClick={() => setActiveModalTab("Addresses")}
+                    >
+                      Addresses
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Edit Content */}
+              <div className="w-full md:w-3/4 lg:w-4/5 bg-white">
+                {activeModalTab === "More Information" && (
+                  <div>
+                    <div className="flex items-center justify-between p-4 border-b">
+                      <h3 className="text-lg font-semibold">
+                        More Information
+                      </h3>
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <MoreInformationForm
+                      infoData={moreInfo}
+                      onSave={handleSaveMoreInfo}
+                      onCancel={() => setIsEditing(false)}
+                    />
+                  </div>
+                )}
+
+                {activeModalTab === "Addresses" && (
+                  <div>
+                    <div className="flex items-center justify-between p-4 border-b">
+                      <h3 className="text-lg font-semibold">Addresses</h3>
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <AddressForm
+                      addresses={addresses}
+                      onSave={handleSaveAddresses}
+                      onCancel={() => setIsEditing(false)}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
