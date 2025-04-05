@@ -446,28 +446,22 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
     setActiveModalTab("Jobs");
   };
 
-  const handleSaveMoreInfo = (updatedInfo) => {
-    setMoreInfo(updatedInfo);
-    setIsEditing(false);
-  };
+  //   const handleSaveMoreInfo = (updatedInfo) => {
+  //     setMoreInfo(updatedInfo);
+  //     setIsEditing(false);
+  //   };
 
-  const handleSaveAddresses = (updatedAddresses) => {
-    setAddresses(updatedAddresses);
-    setIsEditing(false);
-  };
+  //   const handleSaveAddresses = (updatedAddresses) => {
+  //     setAddresses(updatedAddresses);
+  //     setIsEditing(false);
+  //   };
 
   const openModal = (tab) => {
     setIsEditing(true);
     setActiveModalTab(tab);
   };
 
-  const ModalTabs = [
-    "About",
-    "Jobs",
-    "Specialities",
-    "More Information",
-    "Addresses",
-  ];
+  const ModalTabs = ["About", "Jobs", "Specialities", ,];
 
   return (
     <div className="mt-6">
@@ -855,7 +849,7 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                   </div>
                 )}
 
-                {activeModalTab === "More Information" && (
+                {/* {activeModalTab === "More Information" && (
                   <div>
                     <div className="flex items-center justify-between p-4 border-b">
                       <h3 className="text-lg font-semibold">
@@ -893,7 +887,7 @@ const TabsSection = ({ activeTab, setActiveTab }) => {
                       onCancel={() => setIsEditing(false)}
                     />
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>
