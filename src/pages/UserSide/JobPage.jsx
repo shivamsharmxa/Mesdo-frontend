@@ -1,166 +1,74 @@
-import { useState } from "react";
 import TopNavigation from "../../components/messages/TopNavigation";
 import Sidebar from "../../components/messages/Sidebar";
-import MessageList from "../../components/messages/MessageList";
-import ChatHeader from "../../components/messages/ChatHeader";
-import MessageBubble from "../../components/messages/MessageBubble";
-import MessageInput from "../../components/messages/MessageInput";
-import { users } from "../../data/messages";
-import ProfileModal from "../../components/messages/ProfileModal";
-import NewGroupModal from "../../components/messages/NewGroupModal"; // Import the new modal
-import GroupProfileModal from "../../components/messages/GroupProfileModal";
+import JobStats from "../../components/jobs/JobStats";
+import JobFilters from "../../components/jobs/JobFilters";
+import JobSort from "../../components/Jobs/JobSort";
+import JobCard from "../../components/jobs/JobCard";
 
-function Messages() {
-  const [activeTab, setActiveTab] = useState("Personal");
-  const [selectedUser, setSelectedUser] = useState(users[0]);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [profileUser, setProfileUser] = useState(null);
-  const [showGroupModal, setShowGroupModal] = useState(false); // State for group modal
-  const [groupName, setGroupName] = useState(""); // State for group name
-  const [groupDescription, setGroupDescription] = useState(""); // State for group description
-  const [groups, setGroups] = useState([]); // State to store created groups
-  const [showGroupProfileModal, setShowGroupProfileModal] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
+const JobPage = () => {
+  const jobs = [
+    {
+      id: 1,
+      logo: "https://randomuser.me/api/portraits/men/1.jpg",
+      status: "Recently active",
+      postedTime: "Posted 2 days ago",
+      saved: false,
+      title: "Dermatologist Specialist",
+      company: "Apollo Hospital",
+      location: "Mumbai, Maharashtra",
+      tags: ["MBBS", "Full-Time", "10-15 Years", "7.2 - 10L / year"],
+      matchPercentage: 85,
+    },
+    {
+      id: 2,
+      logo: "https://randomuser.me/api/portraits/men/2.jpg",
+      status: "Recently active",
+      postedTime: "Posted 1 day ago",
+      saved: true,
+      title: "Cardiologist",
+      company: "Fortis Hospital",
+      location: "Delhi, NCR",
+      tags: ["MD", "Full-Time", "8-12 Years", "12 - 15L / year"],
+      matchPercentage: 92,
+    },
+    {
+      id: 3,
+      logo: "https://randomuser.me/api/portraits/women/3.jpg",
+      status: "Urgently hiring",
+      postedTime: "Posted 3 days ago",
+      saved: false,
+      title: "Pediatric Surgeon",
+      company: "Manipal Hospital",
+      location: "Bangalore, Karnataka",
+      tags: ["MS", "Part-Time", "5-8 Years", "6 - 8L / year"],
+      matchPercentage: 78,
+    },
+  ];
 
-  // Combine regular users and groups for display
-  const allConversations = [...users, ...groups];
-
-  // Mock Profile Data
-  const [profileData] = useState({
-    name: "Dr. Rajeev Bhatt",
-    title: "Cardiologist",
-    hospital: "City Medical Center",
-    location: "New York, USA",
-    phone: "+1 (555) 123-4567",
-    email: "rajeev.bhatt@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150",
-    media: [
-      "https://images.unsplash.com/photo-1579684385127-1ef15d508118",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-    ],
-  });
-
-  const handleSendMessage = (message, file) => {
-    if (message.trim() === "" && !file) return;
-    console.log("Message:", message);
-    if (file) {
-      console.log("File:", file.name);
-    }
-  };
-
-  const handleProfileClick = (user) => {
-    if (user.isGroup) {
-      setSelectedGroup(user);
-      setShowGroupProfileModal(true);
-    } else {
-      setProfileUser(user);
-      setShowProfileModal(true);
-    }
-  };
-
-  const handleCreateGroup = (newGroup) => {
-    const completeGroup = {
-      ...newGroup,
-      id: `group-${Date.now()}`,
-      lastMessage: "Group created",
-      time: "Just now",
-      image: "/group-default.png",
-      isGroup: true,
-      messages: [],
-      online: false,
-    };
-
-    setGroups([...groups, completeGroup]);
-    setSelectedUser(completeGroup);
-    setActiveTab("Groups");
-    setShowGroupModal(false);
-    setGroupName(""); // ✅ Ensure name is cleared
-    setGroupDescription(""); // ✅ Ensure description is cleared
-  };
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <TopNavigation />
 
       <div className="flex flex-1 overflow-hidden pt-16 mb-7 mr-20 ml-18">
         <Sidebar />
-        <div className="flex flex-1 ml-[300px] mt-9 mb-5">
-          <MessageList
-            users={allConversations}
-            selectedUser={selectedUser}
-            setSelectedUser={setSelectedUser}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onCreateGroup={() => {
-              setShowGroupModal(true); // ✅ Open modal
-              setGroupName(""); // ✅ Reset state
-              setGroupDescription(""); // ✅ Reset state
-            }}
-          />
 
-          <div className="flex-1 flex flex-col bg-white border-l border-gray-200">
-            <ChatHeader
-              selectedUser={selectedUser}
-              onProfileClick={() => handleProfileClick(selectedUser)}
-            />
+        {/* Main Job Content */}
+        <div className="flex flex-1 ml-[300px] mt-9 mb-5 overflow-y-auto p-6">
+          <div className="w-full max-w-5xl mx-auto">
+            <JobStats />
+            <JobFilters />
+            <JobSort totalResults="1,202" />
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              <div className="flex items-center justify-center">
-                <div className="bg-blue-100 text-sm rounded-lg py-1 px-3">
-                  Today, March 16
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {selectedUser.messages?.map((message) => (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    selectedUser={selectedUser}
-                  />
-                ))}
-              </div>
+            <div className="space-y-4">
+              {jobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
             </div>
-
-            <MessageInput onSend={handleSendMessage} />
           </div>
         </div>
       </div>
-
-      {/* Profile Modal */}
-      <ProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-        profile={profileUser}
-      />
-
-      {/* Group Profile Modal */}
-      <GroupProfileModal
-        isOpen={showGroupProfileModal}
-        onClose={() => setShowGroupProfileModal(false)}
-        group={selectedGroup}
-      />
-
-      {/* New Group Modal */}
-      <NewGroupModal
-        isOpen={showGroupModal}
-        onClose={() => {
-          setShowGroupModal(false);
-          setGroupName(""); // ✅ Reset state properly
-          setGroupDescription("");
-        }}
-        onCreate={handleCreateGroup}
-        groupName={groupName} // ✅ Ensure this is passed
-        setGroupName={setGroupName} // ✅ Ensure this is passed
-        description={groupDescription} // ✅ Ensure this is passed
-        setDescription={setGroupDescription} // ✅ Ensure this is passed
-      />
     </div>
   );
-}
+};
 
-export default Messages;
+export default JobPage;
