@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import {
   MapPin,
   Briefcase,
@@ -8,6 +10,7 @@ import {
   ChevronRight,
   ExternalLink,
   Edit,
+  XCircleIcon,
 } from "lucide-react";
 import { AiOutlineUp, AiOutlineDown } from "react-icons/ai";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -77,35 +80,6 @@ const InterviewDropdown = () => {
     </div>
   );
 };
-
-const PersonalInformation = () => (
-  <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
-    <h2 className="text-base font-semibold text-gray-800 mb-3">
-      Personal Information
-    </h2>
-    <div className="flex flex-col gap-2 text-sm text-gray-700">
-      <div className="flex justify-between">
-        <span>Email Address</span>
-        <a
-          href="mailto:rahulthakar@gmail.com"
-          className="text-[#1890FF] hover:underline"
-        >
-          rahulthakar@gmail.com
-        </a>
-      </div>
-      <div className="flex justify-between">
-        <span>Mobile No.</span>
-        <a href="tel:+919034573753" className="text-[#1890FF] hover:underline">
-          +91 9034573753
-        </a>
-      </div>
-      <div className="flex justify-between">
-        <span>Location</span>
-        <span>Dwarka, Delhi</span>
-      </div>
-    </div>
-  </div>
-);
 
 const MatchPercentage = () => {
   const percentage = 30;
@@ -201,28 +175,139 @@ const Tag = ({ label }) => (
   </span>
 );
 
-const JobDetails = () => {
-  const InfoItem = ({ label, value, isLink = false }) => (
-    <div className="flex justify-between items-center">
-      <span className="text-[14px] text-gray-600">{label}</span>
-      {isLink ? (
-        <a
-          href={`https://${value}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[14px] text-[#1890FF] hover:underline flex items-center"
-        >
-          {value}
-          <ExternalLink className="w-3 h-3 ml-1" />
-        </a>
-      ) : (
-        <span className="text-[14px] text-gray-900">{value}</span>
-      )}
+const JobDetails = ({ jobId, onClose }) => {
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("Job Description");
+
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        console.log(`Fetching job with ID: ${jobId}`); // Debug log
+
+        const res = await axios.get(`http://localhost:5005/api/jobs/${jobId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 5000,
+        });
+
+        console.log("Full API response:", res); // Debug log
+
+        if (!res.data) {
+          throw new Error("Empty response from server");
+        }
+
+        const jobData = res.data.job || res.data;
+
+        if (!jobData) {
+          throw new Error("Invalid job data format");
+        }
+
+        setJob(jobData);
+      } catch (err) {
+        console.error("Detailed error:", {
+          message: err.message,
+          response: err.response,
+          stack: err.stack,
+        });
+
+        let errorMessage = "Failed to load job details";
+
+        if (err.response) {
+          errorMessage =
+            err.response.data?.message ||
+            `Server error: ${err.response.status}`;
+        } else if (err.request) {
+          errorMessage = "No response from server - is it running?";
+        } else {
+          errorMessage = err.message;
+        }
+
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (jobId && /^[0-9a-fA-F]{24}$/.test(jobId)) {
+      fetchJobDetails();
+    } else {
+      setError("Invalid job ID format");
+      setLoading(false);
+    }
+  }, [jobId]);
+
+  const renderDebugInfo = () => (
+    <div className="bg-gray-100 p-4 rounded-lg text-xs mt-4">
+      <h3 className="font-bold mb-2">Debug Information:</h3>
+      <p>Job ID: {jobId}</p>
+      <p>Loading: {loading.toString()}</p>
+      <p>Error: {error || "null"}</p>
+      <p>Job Data: {job ? JSON.stringify(job, null, 2) : "null"}</p>
     </div>
   );
 
-  const [activeTab, setActiveTab] = useState("Job Description");
-  const jobs = [
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <XCircleIcon className="h-5 w-5 text-red-500" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Error loading job details
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{error}</p>
+                <p className="mt-2">
+                  Please check:
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Is the backend server running?</li>
+                    <li>Is the job ID correct?</li>
+                    <li>Check browser console for more details</li>
+                  </ul>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Retry
+        </button>
+        {renderDebugInfo()}
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-gray-500">No job data found</p>
+        {renderDebugInfo()}
+      </div>
+    );
+  }
+
+  // Mock similar jobs data (you might want to fetch this from API)
+  const similarJobs = [
     {
       id: 1,
       logo: "https://randomuser.me/api/portraits/men/3.jpg",
@@ -247,18 +332,6 @@ const JobDetails = () => {
       tags: ["MD", "Full-Time", "8-12 Years", "12 - 15L / year"],
       matchPercentage: 92,
     },
-    {
-      id: 3,
-      logo: "https://randomuser.me/api/portraits/women/1.jpg",
-      status: "Urgently hiring",
-      postedTime: "Posted 3 days ago",
-      saved: false,
-      title: "Pediatric Surgeon",
-      company: "Manipal Hospital",
-      location: "Bangalore, Karnataka",
-      tags: ["MS", "Part-Time", "5-8 Years", "6 - 8L / year"],
-      matchPercentage: 78,
-    },
   ];
 
   return (
@@ -269,21 +342,19 @@ const JobDetails = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop"
-                alt="Apollo Hospital"
+                src={job.companyLogo || "https://via.placeholder.com/80"}
+                alt={job.company}
                 className="w-16 h-16 rounded-lg object-cover"
               />
               <div>
                 <span className="bg-purple-50 text-purple-600 text-xs font-medium px-2.5 py-1 rounded-full inline-block mb-1">
-                  Recently Active
+                  {job.status || "Active"}
                 </span>
-                <h1 className="text-xl font-semibold">
-                  Dermatologist Specialist
-                </h1>
+                <h1 className="text-xl font-semibold">{job.title}</h1>
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <span>Apollo Hospital</span>
+                  <span>{job.company}</span>
                   <span>|</span>
-                  <span>Mumbai, Maharashtra</span>
+                  <span>{job.location}</span>
                 </div>
               </div>
             </div>
@@ -341,10 +412,30 @@ const JobDetails = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { icon: MapPin, label: "Area", value: "Chembur" },
-                  { icon: Briefcase, label: "Job Type", value: "Full-Time" },
-                  { icon: DollarSign, label: "Salary", value: "5-10L" },
-                  { icon: Clock, label: "Experience", value: "10+ Year" },
+                  { icon: MapPin, label: "Area", value: job.area || "Chembur" },
+                  {
+                    icon: Briefcase,
+                    label: "Job Type",
+                    value: job.jobType || "Full-Time",
+                  },
+                  {
+                    icon: DollarSign,
+                    label: "Salary",
+                    value: job.salary
+                      ? `${job.salary.min || 0} - ${job.salary.max || 0} ${
+                          job.salary.currency || "INR"
+                        }`
+                      : "Not specified",
+                  },
+                  {
+                    icon: Clock,
+                    label: "Experience",
+                    value: job.experience
+                      ? `${job.experience.min || 0}-${
+                          job.experience.max || 0
+                        } Years`
+                      : "Not specified",
+                  },
                 ].map((item, idx) => (
                   <div
                     key={idx}
@@ -364,11 +455,7 @@ const JobDetails = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <Section title="Job Description">
                 <p className="text-gray-700 text-sm">
-                  Lorem ipsum dolor sit amet consectetur. Et sit quam nisi
-                  auctor quis. Faucibus fermentum accumsan elementum mattis
-                  accumsan turpis,Lorem ipsum dolor sit amet consectetur. Et sit
-                  quam nisi auctor quis. Faucibus fermentum accumsan elementum
-                  mattis accumsan turpis...
+                  {job.description || "No description provided."}
                 </p>
               </Section>
             </div>
@@ -377,16 +464,21 @@ const JobDetails = () => {
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <Section title="Specialization Required">
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {["Hospital", "Clinic", "Health Insurance", "Pharmacy"].map(
-                    (tag) => (
-                      <Tag key={tag} label={tag} />
-                    )
-                  )}
+                  {job.skills && job.skills.length > 0
+                    ? job.skills.map((skill) => (
+                        <Tag key={skill} label={skill} />
+                      ))
+                    : [
+                        "Hospital",
+                        "Clinic",
+                        "Health Insurance",
+                        "Pharmacy",
+                      ].map((tag) => <Tag key={tag} label={tag} />)}
                 </div>
               </Section>
             </div>
 
-            {/* Additional Detail */}
+            {/* Additional Detail - Kept static as per your request */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <Section title="Additional Detail">
                 <div className="space-y-3">
@@ -421,7 +513,6 @@ const JobDetails = () => {
 
         {activeTab === "Hospital Detail" && (
           <div className="md:col-span-4">
-            {/* Replace with real hospital details */}
             <HospitalDetails />
           </div>
         )}
@@ -438,7 +529,7 @@ const JobDetails = () => {
 
               {/* Grid Layout for JobCards */}
               <div className="grid grid-cols-1 md:grid-cols-1 gap-6 w-250">
-                {jobs.slice(0, 4).map((job) => (
+                {similarJobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
@@ -448,7 +539,6 @@ const JobDetails = () => {
       </div>
 
       {/* Right Column */}
-      {/* Right Column (Tab-specific) */}
       <div className="space-y-6">
         {activeTab === "Job Description" && (
           <>
