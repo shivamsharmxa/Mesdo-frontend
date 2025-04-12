@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bell,
   Briefcase,
@@ -68,73 +68,80 @@ function NotificationItem({
 
 export default function NotificationApp() {
   const [activeTab, setActiveTab] = useState("all");
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "all",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop",
-      title: "Dr. Krishna and 3 others have added comments on your post",
-      description:
-        "15 more opening at your alerted company within the last hour, Apply Now!",
-      time: "Today at 9:42 AM",
-      isPinned: false,
-    },
-    {
-      id: 2,
-      type: "mentions",
-      avatar:
-        "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=50&h=50&fit=crop",
-      title: (
-        <>
-          Healthcare{" "}
-          <span className="text-gray-600">
-            has changed your application status to
-          </span>{" "}
-          <span className="text-green-500">SHORTLISTED</span>
-        </>
-      ),
-      time: "Today at 9:42 AM",
-      isPinned: false,
-    },
-    {
-      id: 3,
-      type: "all",
-      title: "Your account is pending verification.",
-      description: "Verify your account for continued experience.",
-      time: "Today at 9:42 AM",
-      showMarkUnread: true,
-      isPinned: false,
-    },
-    {
-      id: 4,
-      type: "jobs",
-      title: "New Opening at HealthCare: Radiologist",
-      description:
-        "15 more opening at your alerted company within the last hour, Apply Now!",
-      time: "Today at 9:42 AM",
-      actionButton: (
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          View Job
-        </button>
-      ),
-      isPinned: false,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
-  const handleDelete = (id) => {
-    setNotifications(
-      notifications.filter((notification) => notification.id !== id)
-    );
+  // Simulated backend fetch
+  const fetchNotifications = async () => {
+    // replace with actual API call
+    const data = [
+      {
+        id: 1,
+        type: "all",
+        avatar:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop",
+        title: "Dr. Krishna and 3 others have added comments on your post",
+        description:
+          "15 more opening at your alerted company within the last hour, Apply Now!",
+        time: "Today at 9:42 AM",
+        isPinned: false,
+      },
+      {
+        id: 2,
+        type: "mentions",
+        avatar:
+          "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=50&h=50&fit=crop",
+        title: (
+          <>
+            Healthcare{" "}
+            <span className="text-gray-600">
+              has changed your application status to
+            </span>{" "}
+            <span className="text-green-500">SHORTLISTED</span>
+          </>
+        ),
+        time: "Today at 9:42 AM",
+        isPinned: false,
+      },
+      {
+        id: 3,
+        type: "all",
+        title: "Your account is pending verification.",
+        description: "Verify your account for continued experience.",
+        time: "Today at 9:42 AM",
+        showMarkUnread: true,
+        isPinned: false,
+      },
+      {
+        id: 4,
+        type: "jobs",
+        title: "New Opening at HealthCare: Radiologist",
+        description:
+          "15 more opening at your alerted company within the last hour, Apply Now!",
+        time: "Today at 9:42 AM",
+        actionButton: (
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            View Job
+          </button>
+        ),
+        isPinned: false,
+      },
+    ];
+    setNotifications(data);
   };
 
-  const handlePin = (id) => {
-    setNotifications(
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, isPinned: !notification.isPinned }
-          : notification
-      )
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const handleDelete = async (id) => {
+    // await deleteNotificationAPI(id);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handlePin = async (id) => {
+    // await pinNotificationAPI(id);
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isPinned: !n.isPinned } : n))
     );
   };
 
@@ -154,54 +161,34 @@ export default function NotificationApp() {
         <div className="flex gap-8">
           <div className="flex-1">
             <div className="flex space-x-6 border-b pb-4 mb-6">
-              <button
-                className={`flex items-center space-x-2 ${
-                  activeTab === "all"
-                    ? "text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("all")}
-              >
-                <span>All</span>
-              </button>
-              <button
-                className={`flex items-center space-x-2 ${
-                  activeTab === "mentions"
-                    ? "text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("mentions")}
-              >
-                <MessageCircle size={18} />
-                <span>Mentions</span>
-                {mentionsCount > 0 && (
-                  <span className="bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded-full">
-                    {mentionsCount}
-                  </span>
-                )}
-              </button>
-              <button
-                className={`flex items-center space-x-2 ${
-                  activeTab === "jobs"
-                    ? "text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("jobs")}
-              >
-                <Briefcase size={18} />
-                <span>Jobs</span>
-              </button>
-              <button
-                className={`flex items-center space-x-2 ${
-                  activeTab === "posts"
-                    ? "text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab("posts")}
-              >
-                <Bell size={18} />
-                <span>My Posts</span>
-              </button>
+              {[
+                { key: "all", icon: null, label: "All" },
+                {
+                  key: "mentions",
+                  icon: <MessageCircle size={18} />,
+                  label: "Mentions",
+                },
+                { key: "jobs", icon: <Briefcase size={18} />, label: "Jobs" },
+                { key: "posts", icon: <Bell size={18} />, label: "My Posts" },
+              ].map(({ key, icon, label }) => (
+                <button
+                  key={key}
+                  className={`flex items-center space-x-2 ${
+                    activeTab === key
+                      ? "text-blue-600 border-b-2 border-blue-600 pb-4 -mb-4"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                  onClick={() => setActiveTab(key)}
+                >
+                  {icon}
+                  <span>{label}</span>
+                  {key === "mentions" && mentionsCount > 0 && (
+                    <span className="bg-red-100 text-red-600 text-xs px-1.5 py-0.5 rounded-full">
+                      {mentionsCount}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
 
             <div className="bg-white rounded-lg shadow divide-y">
