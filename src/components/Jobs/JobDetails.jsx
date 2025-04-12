@@ -182,6 +182,9 @@ const JobDetails = ({ jobId, onClose }) => {
   const [activeTab, setActiveTab] = useState("Job Description");
 
   useEffect(() => {
+    console.log("Received jobId:", jobId); // Add this line
+    console.log("Type of jobId:", typeof jobId); // And this line
+
     const fetchJobDetails = async () => {
       try {
         setLoading(true);
@@ -237,6 +240,7 @@ const JobDetails = ({ jobId, onClose }) => {
     if (jobId && /^[0-9a-fA-F]{24}$/.test(jobId)) {
       fetchJobDetails();
     } else {
+      console.log("Failed ID validation. ID value:", jobId); // Add this
       setError("Invalid job ID format");
       setLoading(false);
     }
@@ -616,5 +620,22 @@ const JobDetails = ({ jobId, onClose }) => {
     </div>
   );
 };
-
+const InfoItem = ({ label, value, isLink = false }) => (
+  <div className="flex justify-between items-center">
+    <span className="text-[14px] text-gray-600">{label}</span>
+    {isLink ? (
+      <a
+        href={`https://${value}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[14px] text-[#1890FF] hover:underline flex items-center"
+      >
+        {value}
+        <ExternalLink className="w-3 h-3 ml-1" />
+      </a>
+    ) : (
+      <span className="text-[14px] text-gray-900">{value}</span>
+    )}
+  </div>
+);
 export default JobDetails;

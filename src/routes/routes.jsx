@@ -28,6 +28,7 @@ import RecruiterProfile from "../pages/Recruiter/profile/RecruiterProfile";
 import Messages from "../pages/UserSide/Messages";
 import ProfileRecruiter from "../pages/Recruiter/profile/ProfileRecruiter";
 import JobPage from "../pages/UserSide/JobPage";
+import NotificationApp from "../components/notification/Notification";
 
 const AppRoutes = () => {
   return (
@@ -60,6 +61,7 @@ const AppRoutes = () => {
       <Route path="/Messages" element={<Messages />} />
       <Route path="/ProfileRecruiter" element={<ProfileRecruiter />} />
       <Route path="/Job" element={<JobPage />} />
+      <Route path="/Notification" element={<NotificationApp />} />
       <Route
         path="/OrganizationInformation"
         element={<OrganizationInformation />}
