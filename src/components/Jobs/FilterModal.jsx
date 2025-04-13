@@ -1,8 +1,8 @@
-// FULL updated code: all blue variants replaced with #1890FF
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
+import axios from "axios";
 
-const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
+const FilterModal = ({ isOpen, onClose, onJobsFiltered }) => {
   const [filters, setFilters] = useState({
     jobTitle: "",
     location: "",
@@ -57,6 +57,26 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
     });
   };
 
+  const handleApply = async () => {
+    try {
+      const response = await fetch("http://localhost:5005/api/jobs/filter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filters),
+      });
+
+      const data = await response.json();
+      console.log("Filtered Jobs: ", data.jobs);
+
+      // Update state to show filtered jobs
+      setJobs(data.jobs);
+    } catch (err) {
+      console.error("Error fetching filtered jobs:", err);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -71,31 +91,24 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
             </button>
           </div>
 
-          {/* Search Bars */}
+          {/* Search Inputs */}
           <div className="bg-white rounded-2xl p-6 mb-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  name="jobTitle"
-                  placeholder="Dental Surgeon"
-                  value={filters.jobTitle}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1890FF] focus:border-transparent"
-                />
-                <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-              </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Enter Location"
-                  value={filters.location}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1890FF] focus:border-transparent"
-                />
-                <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-              </div>
+              {["jobTitle", "location"].map((field) => (
+                <div key={field} className="relative">
+                  <input
+                    type="text"
+                    name={field}
+                    placeholder={
+                      field === "jobTitle" ? "Dental Surgeon" : "Enter Location"
+                    }
+                    value={filters[field]}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1890FF] focus:border-transparent"
+                  />
+                  <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -105,96 +118,26 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
               <h2 className="text-lg font-medium mb-4">Areas of Interest</h2>
               <div className="grid grid-cols-2 gap-8">
                 {/* Skills */}
-                <div>
-                  <h3 className="text-sm font-medium mb-2 ">Skills</h3>
-                  <div className="relative mb-3">
-                    <input
-                      type="text"
-                      value={newSkill}
-                      onChange={(e) => setNewSkill(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddTag("skills", setNewSkill, newSkill);
-                        }
-                      }}
-                      placeholder="Add skill"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    />
-                    <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {filters.skills.map((skill) => (
-                      <button
-                        key={skill}
-                        onClick={() => handleToggleSelection("skills", skill)}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          filters.skills.includes(skill)
-                            ? "bg-[#1890FF] text-white"
-                            : "bg-[#E6F4FF] text-[#1890FF]"
-                        }`}
-                      >
-                        {skill}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => {
-                      onApplyFilters(filters);
-                      onClose();
-                    }}
-                    className="text-[#1890FF] text-sm font-medium ml-80"
-                  >
-                    APPLY
-                  </button>
-                </div>
+                <TagInput
+                  title="Skills"
+                  field="skills"
+                  tags={filters.skills}
+                  newTag={newSkill}
+                  setNewTag={setNewSkill}
+                  toggle={handleToggleSelection}
+                  addTag={handleAddTag}
+                />
 
-                {/* Specialisation */}
-                <div>
-                  <h3 className="text-sm font-medium mb-2">Specialisation</h3>
-                  <div className="relative mb-3">
-                    <input
-                      type="text"
-                      value={newSpec}
-                      onChange={(e) => setNewSpec(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddTag("specializations", setNewSpec, newSpec);
-                        }
-                      }}
-                      placeholder="Add specialisation"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    />
-                    <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {filters.specializations.map((spec) => (
-                      <button
-                        key={spec}
-                        onClick={() =>
-                          handleToggleSelection("specializations", spec)
-                        }
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          filters.specializations.includes(spec)
-                            ? "bg-[#1890FF] text-white"
-                            : "bg-[#E6F4FF] text-[#1890FF]"
-                        }`}
-                      >
-                        {spec}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => {
-                      onApplyFilters(filters);
-                      onClose();
-                    }}
-                    className="text-[#1890FF] text-sm font-medium ml-80"
-                  >
-                    APPLY
-                  </button>
-                </div>
+                {/* Specializations */}
+                <TagInput
+                  title="Specialisation"
+                  field="specializations"
+                  tags={filters.specializations}
+                  newTag={newSpec}
+                  setNewTag={setNewSpec}
+                  toggle={handleToggleSelection}
+                  addTag={handleAddTag}
+                />
               </div>
             </div>
 
@@ -226,108 +169,31 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
                     Selected: {filters.experience}{" "}
                     {filters.experience === 1 ? "year" : "years"}
                   </div>
-                  <button
-                    onClick={() => {
-                      onApplyFilters(filters);
-                      onClose();
-                    }}
-                    className="mt-2 text-[#1890FF] text-sm font-medium ml-80"
-                  >
-                    APPLY
-                  </button>
                 </div>
 
-                {/* Job Type */}
-                <div>
-                  <h3 className="text-sm font-medium mb-2">Job Type</h3>
-                  <div className="relative mb-3">
-                    <input
-                      type="text"
-                      value={newJobType}
-                      onChange={(e) => setNewJobType(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddTag("jobTypes", setNewJobType, newJobType);
-                        }
-                      }}
-                      placeholder="Add job type"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    />
-                    <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {filters.jobTypes.map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => handleToggleSelection("jobTypes", type)}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          filters.jobTypes.includes(type)
-                            ? "bg-[#1890FF] text-white"
-                            : "bg-[#E6F4FF] text-[#1890FF]"
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => {
-                      onApplyFilters(filters);
-                      onClose();
-                    }}
-                    className="text-[#1890FF] text-sm font-medium ml-80"
-                  >
-                    APPLY
-                  </button>
-                </div>
+                {/* Job Types */}
+                <TagInput
+                  title="Job Type"
+                  field="jobTypes"
+                  tags={filters.jobTypes}
+                  newTag={newJobType}
+                  setNewTag={setNewJobType}
+                  toggle={handleToggleSelection}
+                  addTag={handleAddTag}
+                />
               </div>
             </div>
 
             {/* Languages */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 w-100">
-              <h2 className="text-lg font-medium mb-4">Languages</h2>
-              <div className="relative mb-3">
-                <input
-                  type="text"
-                  value={newLanguage}
-                  onChange={(e) => setNewLanguage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleAddTag("languages", setNewLanguage, newLanguage);
-                    }
-                  }}
-                  placeholder="Add language"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                />
-                <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
-              </div>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {filters.languages.map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => handleToggleSelection("languages", lang)}
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      filters.languages.includes(lang)
-                        ? "bg-[#1890FF] text-white"
-                        : "bg-[#E6F4FF] text-[#1890FF]"
-                    }`}
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-              <button
-                onClick={() => {
-                  onApplyFilters(filters);
-                  onClose();
-                }}
-                className="text-[#1890FF] text-sm font-medium ml-80"
-              >
-                APPLY
-              </button>
-            </div>
+            <TagInput
+              title="Languages"
+              field="languages"
+              tags={filters.languages}
+              newTag={newLanguage}
+              setNewTag={setNewLanguage}
+              toggle={handleToggleSelection}
+              addTag={handleAddTag}
+            />
 
             {/* Compensation */}
             <div className="bg-white rounded-2xl shadow-sm p-6 w-100">
@@ -353,25 +219,22 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
               <div className="mt-2 text-sm text-[#1890FF]">
                 Selected: Rs {filters.salaryRange.toLocaleString()}
               </div>
-              <button
-                onClick={() => {
-                  onApplyFilters(filters);
-                  onClose();
-                }}
-                className="mt-2 text-[#1890FF] text-sm font-medium ml-80"
-              >
-                APPLY
-              </button>
             </div>
           </div>
 
-          {/* Reset Button */}
-          <div className="flex justify-end mt-6">
+          {/* Action Buttons */}
+          <div className="flex justify-between mt-6">
             <button
               onClick={handleReset}
               className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
             >
               Reset All
+            </button>
+            <button
+              onClick={handleApply}
+              className="px-6 py-2 bg-[#1890FF] text-white rounded-lg hover:bg-[#1478d4]"
+            >
+              Apply Filters
             </button>
           </div>
         </div>
@@ -379,5 +242,50 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
     </div>
   );
 };
+
+const TagInput = ({
+  title,
+  field,
+  tags,
+  newTag,
+  setNewTag,
+  toggle,
+  addTag,
+}) => (
+  <div>
+    <h3 className="text-sm font-medium mb-2">{title}</h3>
+    <div className="relative mb-3">
+      <input
+        type="text"
+        value={newTag}
+        onChange={(e) => setNewTag(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addTag(field, setNewTag, newTag);
+          }
+        }}
+        placeholder={`Add ${title.toLowerCase()}`}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+      />
+      <Search className="absolute right-3 top-2.5 text-[#1890FF] w-5 h-5" />
+    </div>
+    <div className="flex flex-wrap gap-2 mb-2">
+      {tags.map((tag) => (
+        <button
+          key={tag}
+          onClick={() => toggle(field, tag)}
+          className={`px-3 py-1 rounded-full text-sm ${
+            tags.includes(tag)
+              ? "bg-[#1890FF] text-white"
+              : "bg-[#E6F4FF] text-[#1890FF]"
+          }`}
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+  </div>
+);
 
 export default FilterModal;
