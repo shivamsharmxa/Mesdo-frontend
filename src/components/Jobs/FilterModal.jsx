@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
-import axios from "axios";
 
 const FilterModal = ({ isOpen, onClose, onJobsFiltered }) => {
   const [filters, setFilters] = useState({
