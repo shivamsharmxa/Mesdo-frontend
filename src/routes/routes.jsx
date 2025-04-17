@@ -29,6 +29,10 @@ import Messages from "../pages/UserSide/Messages";
 import ProfileRecruiter from "../pages/Recruiter/profile/ProfileRecruiter";
 import JobPage from "../pages/UserSide/JobPage";
 import NotificationApp from "../components/notification/Notification";
+import Settings from "../pages/UserSide/Settings";
+import AppliedJob from "../pages/UserSide/AppliedJob";
+import SavedJobs from "../pages/UserSide/SavedJobs";
+import HiddenJobs from "../pages/UserSide/HiddenJobs";
 
 const AppRoutes = () => {
   return (
@@ -62,6 +66,10 @@ const AppRoutes = () => {
       <Route path="/ProfileRecruiter" element={<ProfileRecruiter />} />
       <Route path="/Job" element={<JobPage />} />
       <Route path="/Notification" element={<NotificationApp />} />
+      <Route path="/Settings" element={<Settings />} />
+      <Route path="/AppliedJob" element={<AppliedJob />} />
+      <Route path="/SavedJob" element={<SavedJobs />} />
+      <Route path="/HiddenJob" element={<HiddenJobs />} />
       <Route
         path="/OrganizationInformation"
         element={<OrganizationInformation />}
