@@ -23,6 +23,7 @@ import {
   Edit,
   Trash2,
   AwardIcon,
+  ChevronDown,
 } from "lucide-react";
 import QualificationsPreview from "../../components/profile/QualificationsPreview";
 import NavItem from "../../components/profile/NavItem";
@@ -112,7 +113,7 @@ const TabsSection = ({
   onSave,
   onCancel,
 }) => {
-  const tabs = ["Overview", "Social Activity", "Applied Jobs", "Saved"];
+  const tabs = ["Overview", "Social Activity", "Saved", "Connection"];
   const [isEditing, setIsEditing] = useState(false);
 
   const [activeModalTab, setActiveModalTab] = useState("About");
@@ -381,7 +382,7 @@ const TabsSection = ({
   ]);
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 ">
       {/* Tabs Container with Border */}
       <div className="border border-gray-200 rounded-lg p-2 bg-white">
         <div className="grid grid-cols-4 gap-2">
@@ -1076,23 +1077,172 @@ const TabsSection = ({
             <p className="text-gray-700">No recent activity.</p>
           </div>
         )}
-        {activeTab === "Applied Jobs" && (
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Applied Jobs</h3>
-            <p className="text-gray-700">No jobs applied yet.</p>
-          </div>
-        )}
+
         {activeTab === "Saved" && (
           <div>
             <h3 className="text-xl font-semibold mb-4">Saved Items</h3>
             <p className="text-gray-700">No saved items.</p>
           </div>
         )}
+        {activeTab === "Connection" && (
+          <div>
+            <ConnectionsContainer />
+          </div>
+        )}
       </div>
     </div>
   );
 };
+const ConnectionsContainer = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const totalConnections = 533;
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState({
+    Industry: null,
+    Location: null,
+    "Recently Connected": null,
+  });
 
+  // Mock data for connections
+  const connections = Array.from({ length: 10 }, (_, i) => ({
+    id: `connection-${i + 1}`,
+    name: "Alena Baptista",
+    title: "Dental Surgeon",
+    company: "Apollo Hospital",
+    profileImage:
+      "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  }));
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Connections ({totalConnections})
+            </h2>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full py-3 pl-4 pr-10 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all duration-200"
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <Search className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+
+          {/* Filter Options */}
+          <div className="mt-4 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+            {["Industry", "Location", "Recently Connected"].map((filter) => (
+              <div key={filter} className="relative">
+                <button
+                  className={`flex items-center justify-between w-full px-4 py-2.5 text-sm bg-white border rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-100 ${
+                    selectedFilters[filter]
+                      ? "border-blue-500 text-blue-600"
+                      : "border-gray-200 text-gray-700"
+                  }`}
+                  onClick={() =>
+                    setActiveFilter(activeFilter === filter ? null : filter)
+                  }
+                >
+                  <span>{selectedFilters[filter] || filter}</span>
+                  <ChevronDown
+                    className={`w-4 h-4 ml-2 transition-transform ${
+                      activeFilter === filter ? "rotate-180" : ""
+                    } ${
+                      selectedFilters[filter]
+                        ? "text-blue-500"
+                        : "text-gray-500"
+                    }`}
+                  />
+                </button>
+
+                {activeFilter === filter && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    {[
+                      ...(filter === "Industry"
+                        ? [
+                            "Technology",
+                            "Finance",
+                            "Healthcare",
+                            "Education",
+                            "Retail",
+                          ]
+                        : filter === "Location"
+                        ? [
+                            "United States",
+                            "Canada",
+                            "UK",
+                            "Australia",
+                            "Germany",
+                          ]
+                        : [
+                            "Last 7 days",
+                            "Last 30 days",
+                            "Last 90 days",
+                            "This year",
+                          ]),
+                    ].map((option) => (
+                      <button
+                        key={option}
+                        className={`block w-full px-4 py-2 text-sm text-left ${
+                          selectedFilters[filter] === option
+                            ? "bg-blue-50 text-blue-600"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                        onClick={() => {
+                          setSelectedFilters({
+                            ...selectedFilters,
+                            [filter]: option,
+                          });
+                          setActiveFilter(null);
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Connections List */}
+          <div className="mt-4">
+            {connections.map((connection) => (
+              <div
+                key={connection.id}
+                className="flex items-center py-4 transition-colors duration-200 border-b border-gray-100 hover:bg-gray-50"
+              >
+                <div className="flex-shrink-0">
+                  <img
+                    src={connection.profileImage}
+                    alt={`${connection.name}'s profile`}
+                    className="object-cover w-12 h-12 rounded-full"
+                  />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-base font-medium text-gray-900">
+                    {connection.name}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {connection.title} | {connection.company}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("Overview");
 
