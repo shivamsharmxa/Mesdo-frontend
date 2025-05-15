@@ -31,19 +31,44 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
-
-  if (!isOpen) return null;
-
-  const handleAddMember = () => {
-    const newMember = {
-      id: Date.now().toString(),
-      name: "New Member",
-      role: "General Physician",
+  const [isAddMembersMode, setIsAddMembersMode] = useState(false);
+  const [allUsers] = useState([
+    {
+      id: "1",
+      name: "Dr. Rajeev Bhatt",
+      role: "Dental Surgeon",
       avatar:
         "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop",
-    };
-    setMembers([...members, newMember]);
-  };
+    },
+    {
+      id: "2",
+      name: "Dr. Riya Sharma",
+      role: "Cardiologist",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+      id: "3",
+      name: "Dr. Aman Verma",
+      role: "Orthopedic",
+      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+    },
+    {
+      id: "4",
+      name: "Dr. Priya Singh",
+      role: "Neurologist",
+      avatar: "https://randomuser.me/api/portraits/women/46.jpg",
+    },
+    {
+      id: "5",
+      name: "Dr. Karan Patel",
+      role: "Pediatrician",
+      avatar: "https://randomuser.me/api/portraits/men/47.jpg",
+    },
+  ]);
+  const [selectedToAdd, setSelectedToAdd] = useState([]);
+  const [searchAddQuery, setSearchAddQuery] = useState("");
+
+  if (!isOpen) return null;
 
   const handleDeleteMember = (id) => {
     setMembers(members.filter((member) => member.id !== id));
@@ -111,7 +136,7 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
           {/* Actions */}
           <div className="px-6 py-4 space-y-3">
             <button
-              onClick={handleAddMember}
+              onClick={() => setIsAddMembersMode(true)}
               className="w-full  text-black-600 font-sm rounded-lg py-2 flex items-center gap-3 px-4 font-medium"
             >
               <Users size={18} className="text-[#1890FF]" /> Add Members
@@ -164,14 +189,15 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
           <div className="bg-white rounded-lg p-6 w-[450px] shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">
-                Remove “{selectedMember.name}” from group?
+                Remove &quot;{selectedMember.name}&quot; from group?
               </h2>
               <button onClick={() => setSelectedMember(null)}>
                 <X size={20} />
               </button>
             </div>
             <p className="text-gray-600 text-sm mb-4">
-              They will be removed from the group and won’t have access anymore.
+              They will be removed from the group and won&apos;t have access
+              anymore.
             </p>
             <div className="flex justify-start gap-4">
               <button
@@ -186,6 +212,92 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
               >
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAddMembersMode && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+            <div className="flex items-center mb-4">
+              <button
+                onClick={() => setIsAddMembersMode(false)}
+                className="mr-2"
+              >
+                <X size={20} />
+              </button>
+              <h2 className="text-lg font-semibold">New Group</h2>
+            </div>
+            <div className="relative mb-4">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1890FF]"
+                size={18}
+              />
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchAddQuery}
+                onChange={(e) => setSearchAddQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border rounded-lg border-[#E4E5E8] bg-[#FAFAFA] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              className="w-full bg-[#1890FF] text-white font-medium rounded-lg py-2 flex items-center justify-center gap-2 mb-4 disabled:opacity-50"
+              onClick={() => {
+                setMembers([
+                  ...members,
+                  ...allUsers.filter(
+                    (u) =>
+                      selectedToAdd.includes(u.id) &&
+                      !members.some((m) => m.id === u.id)
+                  ),
+                ]);
+                setIsAddMembersMode(false);
+                setSelectedToAdd([]);
+              }}
+              disabled={selectedToAdd.length === 0}
+            >
+              <Users size={18} /> Add {selectedToAdd.length} Member
+              {selectedToAdd.length !== 1 ? "s" : ""}
+            </button>
+            <div className="space-y-3 max-h-60 overflow-y-auto">
+              {allUsers
+                .filter((u) =>
+                  u.name.toLowerCase().includes(searchAddQuery.toLowerCase())
+                )
+                .map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between px-2 py-2 hover:bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <h3 className="font-medium text-gray-800">
+                          {user.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">{user.role}</p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={selectedToAdd.includes(user.id)}
+                      onChange={() => {
+                        setSelectedToAdd((selectedToAdd) =>
+                          selectedToAdd.includes(user.id)
+                            ? selectedToAdd.filter((id) => id !== user.id)
+                            : [...selectedToAdd, user.id]
+                        );
+                      }}
+                      className="w-5 h-5 accent-[#1890FF]"
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </div>
