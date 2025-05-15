@@ -6,6 +6,7 @@ import Privacy from "../../components/settingstabs/Privacy";
 import Preferences from "../../components/settingstabs/ Preferences";
 import Appearance from "../../components/settingstabs/ Appearance";
 import Notification from "../../components/settingstabs/  Notification";
+import PropTypes from "prop-types";
 
 const Tab = ({ label, isActive, onClick }) => (
   <button
@@ -20,6 +21,45 @@ const Tab = ({ label, isActive, onClick }) => (
   </button>
 );
 
+Tab.propTypes = {
+  label: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+const countryList = [
+  {
+    code: "+1",
+    name: "United States",
+    flag: "https://flagcdn.com/us.svg",
+    short: "US",
+  },
+  {
+    code: "+44",
+    name: "United Kingdom",
+    flag: "https://flagcdn.com/gb.svg",
+    short: "GB",
+  },
+  {
+    code: "+91",
+    name: "India",
+    flag: "https://flagcdn.com/in.svg",
+    short: "IN",
+  },
+  {
+    code: "+61",
+    name: "Australia",
+    flag: "https://flagcdn.com/au.svg",
+    short: "AU",
+  },
+  {
+    code: "+1",
+    name: "Canada",
+    flag: "https://flagcdn.com/ca.svg",
+    short: "CA",
+  },
+];
+
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("Account");
   const [formData, setFormData] = useState({
@@ -32,6 +72,8 @@ const Settings = () => {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   );
   const fileInputRef = useRef(null);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(countryList[1]); // Default to UK
 
   const tabs = [
     "Account",
@@ -169,15 +211,46 @@ const Settings = () => {
                         <label className="block text-sm font-bold text-gray-700">
                           Phone Number
                         </label>
-                        <div className="mt-1 ml-50 w-120 h-10 flex">
-                          <button className="px-3 py-1.5 text-sm border border-gray-300 rounded-l-md bg-white flex items-center space-x-2">
+                        <div className="mt-1 ml-50 w-120 h-10 flex relative">
+                          <button
+                            type="button"
+                            className="px-3 py-1.5 text-sm border border-gray-300 rounded-l-md bg-white flex items-center space-x-2 relative z-10"
+                            onClick={() => setShowCountryDropdown((v) => !v)}
+                          >
                             <img
-                              src="https://images.unsplash.com/photo-1628525805814-cf9c89c76d52?auto=format&fit=crop&w=24&h=16&q=80"
-                              alt="GB"
+                              src={selectedCountry.flag}
+                              alt={selectedCountry.short}
                               className="w-6 h-4 object-cover rounded"
                             />
+                            <span>{selectedCountry.code}</span>
                             <ChevronDown className="h-4 w-4 text-gray-500" />
                           </button>
+                          {showCountryDropdown && (
+                            <div className="absolute left-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-20 w-56 max-h-60 overflow-y-auto">
+                              {countryList.map((country) => (
+                                <div
+                                  key={country.code + country.short}
+                                  className="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer gap-2"
+                                  onClick={() => {
+                                    setSelectedCountry(country);
+                                    setShowCountryDropdown(false);
+                                  }}
+                                >
+                                  <img
+                                    src={country.flag}
+                                    alt={country.short}
+                                    className="w-5 h-3 object-cover rounded"
+                                  />
+                                  <span className="text-sm">
+                                    {country.name}
+                                  </span>
+                                  <span className="ml-auto text-xs text-gray-500">
+                                    {country.code}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                           <input
                             type="tel"
                             value={formData.phone}
@@ -188,6 +261,7 @@ const Settings = () => {
                               })
                             }
                             className="flex-1 px-3 py-1.5 text-sm border-y border-r border-gray-300 rounded-r-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            style={{ zIndex: 1 }}
                           />
                         </div>
                       </div>
