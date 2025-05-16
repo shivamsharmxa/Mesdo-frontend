@@ -25,26 +25,6 @@ function Messages() {
   // Combine regular users and groups for display
   const allConversations = [...users, ...groups];
 
-  // Mock Profile Data
-  const [profileData] = useState({
-    name: "Dr. Rajeev Bhatt",
-    title: "Cardiologist",
-    hospital: "City Medical Center",
-    location: "New York, USA",
-    phone: "+1 (555) 123-4567",
-    email: "rajeev.bhatt@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150",
-    media: [
-      "https://images.unsplash.com/photo-1579684385127-1ef15d508118",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-      "https://images.unsplash.com/photo-1581595219315-a187dd40c322",
-    ],
-  });
-
   const handleSendMessage = (message, file) => {
     if (message.trim() === "" && !file) return;
     console.log("Message:", message);
@@ -76,11 +56,11 @@ function Messages() {
     };
 
     setGroups([...groups, completeGroup]);
-    setSelectedUser(completeGroup);
+    // setSelectedUser(completeGroup); // Do not auto-select the new group after creation
     setActiveTab("Groups");
     setShowGroupModal(false);
-    setGroupName(""); // ✅ Ensure name is cleared
-    setGroupDescription(""); // ✅ Ensure description is cleared
+    setGroupName("");
+    setGroupDescription("");
   };
   return (
     <div className="flex flex-col h-screen bg-gray-50">

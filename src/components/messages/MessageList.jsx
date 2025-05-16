@@ -3,6 +3,46 @@ import { Search, ArrowLeft } from "lucide-react";
 import CreateMessage from "../../assets/CreateMessage.png";
 import CreateGroupModal from "./CreateGroupModal";
 import { useState } from "react";
+import PropTypes from "prop-types";
+
+// Dummy users for group creation
+const dummyUsers = [
+  {
+    id: 1,
+    name: "Dr. Rajeev Bhatt",
+    role: "Dental Surgeon",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
+  },
+  {
+    id: 2,
+    name: "Dr. Riya Sharma",
+    role: "Cardiologist",
+    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+  },
+  {
+    id: 3,
+    name: "Dr. Aman Verma",
+    role: "Orthopedic",
+    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+    image: "https://randomuser.me/api/portraits/men/45.jpg",
+  },
+  {
+    id: 4,
+    name: "Dr. Priya Singh",
+    role: "Neurologist",
+    avatar: "https://randomuser.me/api/portraits/women/46.jpg",
+    image: "https://randomuser.me/api/portraits/women/46.jpg",
+  },
+  {
+    id: 5,
+    name: "Dr. Karan Patel",
+    role: "Pediatrician",
+    avatar: "https://randomuser.me/api/portraits/men/47.jpg",
+    image: "https://randomuser.me/api/portraits/men/47.jpg",
+  },
+];
 
 const MessageList = ({
   users,
@@ -83,7 +123,7 @@ const MessageList = ({
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <p className="mb-2">No groups yet</p>
             <button
-              onClick={onCreateGroup}
+              onClick={() => setShowCreateGroupModal(true)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               aria-label="Create new group"
             >
@@ -111,10 +151,20 @@ const MessageList = ({
       <CreateGroupModal
         isOpen={showCreateGroupModal}
         onClose={() => setShowCreateGroupModal(false)}
-        users={users}
+        users={activeTab === "Groups" ? dummyUsers : users}
+        onCreateGroup={onCreateGroup}
       />
     </div>
   );
+};
+
+MessageList.propTypes = {
+  users: PropTypes.array.isRequired,
+  selectedUser: PropTypes.object,
+  setSelectedUser: PropTypes.func,
+  activeTab: PropTypes.string.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
+  onCreateGroup: PropTypes.func,
 };
 
 export default MessageList;

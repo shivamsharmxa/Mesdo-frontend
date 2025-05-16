@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   Link as LinkIcon,
@@ -67,6 +67,15 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
   ]);
   const [selectedToAdd, setSelectedToAdd] = useState([]);
   const [searchAddQuery, setSearchAddQuery] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsAddMembersMode(false);
+      setSelectedToAdd([]);
+      setSearchQuery("");
+      setSearchAddQuery("");
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -186,29 +195,25 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
       {/* Confirmation Modal */}
       {selectedMember && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
-          <div className="bg-white rounded-lg p-6 w-[450px] shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">
-                Remove &quot;{selectedMember.name}&quot; from group?
-              </h2>
-              <button onClick={() => setSelectedMember(null)}>
-                <X size={20} />
-              </button>
-            </div>
-            <p className="text-gray-600 text-sm mb-4">
-              They will be removed from the group and won&apos;t have access
-              anymore.
+          <div className="bg-white rounded-2xl w-full max-w-md p-8 shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">
+              Are you sure you want to remove {selectedMember.name} from the
+              group?
+            </h2>
+            <p className="text-gray-500 mb-8">
+              They will not be receiving any further messages or information
+              from this group anymore.
             </p>
-            <div className="flex justify-start gap-4">
+            <div className="flex gap-4 justify-center">
               <button
                 onClick={() => handleDeleteMember(selectedMember.id)}
-                className="bg-red-500 text-white px-6 py-2 w-1/2 rounded-lg hover:bg-red-600"
+                className="flex-1 bg-red-500 text-white font-semibold rounded-lg py-3 hover:bg-red-600"
               >
                 Remove
               </button>
               <button
                 onClick={() => setSelectedMember(null)}
-                className="border border-gray-300 px-6 py-2 w-1/2 rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex-1 border border-gray-300 rounded-lg py-3 text-gray-700 hover:bg-gray-100"
               >
                 Cancel
               </button>
