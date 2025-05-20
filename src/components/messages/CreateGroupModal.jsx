@@ -2,68 +2,53 @@ import { useState, useEffect } from "react";
 import { Search, X, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AddGroupModal from "./AddGroupModal";
-import NewGroupModal from "./NewGroupModal"; // Import the NewGroupModal component
+import NewGroupModal from "./NewGroupModal";
 import PropTypes from "prop-types";
 
-// Dummy users for testing
-const dummyUsers = [
-  {
-    id: 1,
-    name: "Dr. Rajeev Bhatt",
-    role: "Dental Surgeon",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    name: "Dr. Riya Sharma",
-    role: "Cardiologist",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    name: "Dr. Aman Verma",
-    role: "Orthopedic",
-    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-  },
-  {
-    id: 4,
-    name: "Dr. Priya Singh",
-    role: "Neurologist",
-    avatar: "https://randomuser.me/api/portraits/women/46.jpg",
-  },
-  {
-    id: 5,
-    name: "Dr. Karan Patel",
-    role: "Pediatrician",
-    avatar: "https://randomuser.me/api/portraits/men/47.jpg",
-  },
-];
-
-const CreateGroupModal = ({ isOpen, onClose, users, onCreateGroup }) => {
+const CreateGroupModal = ({ isOpen, onClose, users = [], onCreateGroup }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(isOpen);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false); // New state for the new group modal
-  const [groupName, setGroupName] = useState(""); // Holds group name
-  const [description, setDescription] = useState(""); // Holds group description
+  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [description, setDescription] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Reset all modal state
+  const resetState = () => {
+    setSearchTerm("");
+    setIsVisible(false);
+    setIsGroupModalOpen(false);
+    setIsNewGroupModalOpen(false);
+    setGroupName("");
+    setDescription("");
+    setShowSuccess(false);
+  };
 
   useEffect(() => {
     setIsVisible(isOpen);
+    if (!isOpen) {
+      resetState();
+    }
+    if (isOpen) {
+      console.log("CreateGroupModal opened");
+    } else {
+      console.log("CreateGroupModal closed");
+    }
   }, [isOpen]);
 
-  const filteredUsers =
-    users && users.length > 0
-      ? users.filter((user) =>
-          user.name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : dummyUsers.filter((user) =>
-          user.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(onClose, 300);
+    if (!showSuccess) {
+      resetState();
+      setTimeout(() => {
+        console.log("CreateGroupModal: handleClose called");
+        onClose();
+      }, 300);
+    }
   };
 
   const handleCreateGroup = (group) => {
@@ -71,9 +56,10 @@ const CreateGroupModal = ({ isOpen, onClose, users, onCreateGroup }) => {
     setShowSuccess(true);
     setIsNewGroupModalOpen(false);
     setTimeout(() => {
-      setIsVisible(false);
-      onClose();
       setShowSuccess(false);
+      resetState();
+      console.log("CreateGroupModal: handleCreateGroup success, closing modal");
+      onClose();
     }, 1200);
   };
 
@@ -137,7 +123,7 @@ const CreateGroupModal = ({ isOpen, onClose, users, onCreateGroup }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
                     className="p-4 border-b hover:bg-gray-50 cursor-pointer"
-                    onClick={() => setIsNewGroupModalOpen(true)} // Open the new group modal
+                    onClick={() => setIsNewGroupModalOpen(true)}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -162,15 +148,13 @@ const CreateGroupModal = ({ isOpen, onClose, users, onCreateGroup }) => {
                         className="p-4 hover:bg-gray-50 cursor-pointer flex items-center gap-3"
                       >
                         <img
-                          src={user.image}
+                          src={user.avatar || user.image}
                           alt={user.name}
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
                           <p className="font-medium">{user.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {user.lastMessage}
-                          </p>
+                          <p className="text-sm text-gray-500">{user.role}</p>
                         </div>
                       </motion.div>
                     ))}
@@ -183,9 +167,9 @@ const CreateGroupModal = ({ isOpen, onClose, users, onCreateGroup }) => {
           {/* New Group Modal */}
           <NewGroupModal
             isOpen={isNewGroupModalOpen}
-            onClose={() => setIsNewGroupModalOpen(false)}
+            onClose={handleClose}
             onCreate={handleCreateGroup}
-            users={users && users.length > 0 ? users : dummyUsers}
+            users={users}
             groupName={groupName}
             setGroupName={setGroupName}
             description={description}

@@ -5,45 +5,6 @@ import CreateGroupModal from "./CreateGroupModal";
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-// Dummy users for group creation
-const dummyUsers = [
-  {
-    id: 1,
-    name: "Dr. Rajeev Bhatt",
-    role: "Dental Surgeon",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    name: "Dr. Riya Sharma",
-    role: "Cardiologist",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    name: "Dr. Aman Verma",
-    role: "Orthopedic",
-    avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
-  },
-  {
-    id: 4,
-    name: "Dr. Priya Singh",
-    role: "Neurologist",
-    avatar: "https://randomuser.me/api/portraits/women/46.jpg",
-    image: "https://randomuser.me/api/portraits/women/46.jpg",
-  },
-  {
-    id: 5,
-    name: "Dr. Karan Patel",
-    role: "Pediatrician",
-    avatar: "https://randomuser.me/api/portraits/men/47.jpg",
-    image: "https://randomuser.me/api/portraits/men/47.jpg",
-  },
-];
-
 const MessageList = ({
   users,
   selectedUser,
@@ -58,14 +19,19 @@ const MessageList = ({
   const filteredUsers = users.filter((user) => {
     switch (activeTab) {
       case "Jobs":
-        return user.category === "job"; // Assuming users have a category field
+        return user.category === "job";
       case "Groups":
-        return user.isGroup; // Assuming groups have isGroup flag
+        return user.isGroup;
       case "Personal":
       default:
         return !user.isGroup && user.category !== "job";
     }
   });
+
+  // Always use the same user list for group creation (all non-group, non-job users)
+  const groupUsers = users.filter(
+    (user) => !user.isGroup && user.category !== "job"
+  );
 
   return (
     <div className="w-[360px] bg-white border-r border-gray-200 flex flex-col">
@@ -84,10 +50,14 @@ const MessageList = ({
           </div>
 
           {/* Show create button only for Groups tab */}
-
           <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            onClick={() => setShowCreateGroupModal(true)} // Opens CreateGroupModal
+            onClick={() => {
+              console.log(
+                "MessageList: setShowCreateGroupModal(true) from create button"
+              );
+              setShowCreateGroupModal(true);
+            }}
             aria-label="Create new chat or group"
           >
             <img src={CreateMessage} alt="Create" className="w-5 h-5" />
@@ -123,7 +93,12 @@ const MessageList = ({
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <p className="mb-2">No groups yet</p>
             <button
-              onClick={() => setShowCreateGroupModal(true)}
+              onClick={() => {
+                console.log(
+                  "MessageList: setShowCreateGroupModal(true) from no groups icon"
+                );
+                setShowCreateGroupModal(true);
+              }}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               aria-label="Create new group"
             >
@@ -141,7 +116,7 @@ const MessageList = ({
               user={user}
               selectedUser={selectedUser}
               onClick={() => setSelectedUser(user)}
-              isGroup={activeTab === "Groups"} // Pass group flag to list item
+              isGroup={activeTab === "Groups"}
             />
           ))
         )}
@@ -151,7 +126,7 @@ const MessageList = ({
       <CreateGroupModal
         isOpen={showCreateGroupModal}
         onClose={() => setShowCreateGroupModal(false)}
-        users={activeTab === "Groups" ? dummyUsers : users}
+        users={groupUsers}
         onCreateGroup={onCreateGroup}
       />
     </div>

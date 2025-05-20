@@ -44,31 +44,59 @@ const NewGroupModal = ({
   isOpen,
   onClose,
   onCreate,
-  groupName = "",
-  setGroupName = () => {},
-  description = "",
-  setDescription = () => {},
+  groupName: externalGroupName = "",
+  setGroupName: externalSetGroupName = () => {},
+  description: externalDescription = "",
+  setDescription: externalSetDescription = () => {},
   users = dummyUsers,
 }) => {
+  // Internal state to ensure we always have state even if props don't update
+  const [internalGroupName, setInternalGroupName] = useState(externalGroupName);
+  const [internalDescription, setInternalDescription] =
+    useState(externalDescription);
   const [showSuccess, setShowSuccess] = useState(false);
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
+  // Use either the prop or internal state
+  const groupName = externalGroupName || internalGroupName;
+  const description = externalDescription || internalDescription;
+
+  // Update both internal state and external state if provided
+  const handleGroupNameChange = (e) => {
+    const value = e.target.value;
+    setInternalGroupName(value);
+    externalSetGroupName(value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    setInternalDescription(value);
+    externalSetDescription(value);
+  };
+
+  // Only reset state when modal is opened
   useEffect(() => {
     if (isOpen) {
       setStep(1);
       setSelectedMembers([]);
       setSearch("");
-      setGroupName("");
-      setDescription("");
+      setInternalGroupName(externalGroupName);
+      setInternalDescription(externalDescription);
       setShowSuccess(false);
+      setIsCreatingGroup(false);
     }
+    // eslint-disable-next-line
   }, [isOpen]);
+
+  const handleClose = () => {
+    onClose();
+  };
 
   if (!isOpen) return null;
 
-  // Filter users by search
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -84,7 +112,14 @@ const NewGroupModal = ({
   };
 
   const handleCreate = () => {
+    // Prevent multiple clicks
+    if (isCreatingGroup) return;
+
+    // Validate group name
     if (!groupName?.trim()) return;
+
+    setIsCreatingGroup(true);
+
     const newGroup = {
       id: `group-${Date.now()}`,
       name: groupName.trim(),
@@ -95,22 +130,19 @@ const NewGroupModal = ({
       isGroup: true,
       members: selectedMembers,
     };
+
+    // Call the onCreate function from props
     onCreate(newGroup);
     setShowSuccess(true);
+
     setTimeout(() => {
       setShowSuccess(false);
+      setIsCreatingGroup(false);
       onClose();
-      setTimeout(() => {
-        setStep(1);
-        setSelectedMembers([]);
-        setSearch("");
-        setGroupName("");
-        setDescription("");
-      }, 300); // Wait for modal to close before resetting state
-    }, 1500);
+    }, 1200);
   };
 
-  // Step 1: Member selection
+  // Success message view
   if (showSuccess) {
     return (
       <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
@@ -123,13 +155,14 @@ const NewGroupModal = ({
     );
   }
 
+  // Step 1: Select Members
   if (step === 1) {
     return (
       <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-2xl w-full max-w-md">
           <div className="p-4 flex items-center gap-4 border-b">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="hover:bg-gray-100 p-1 rounded-full"
             >
               <ArrowLeft size={24} />
@@ -189,7 +222,7 @@ const NewGroupModal = ({
     );
   }
 
-  // Step 2: Group details
+  // Step 2: Group Details
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl w-full max-w-md">
@@ -221,7 +254,7 @@ const NewGroupModal = ({
               type="text"
               placeholder="Group name"
               value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
+              onChange={handleGroupNameChange}
               className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
             />
           </div>
@@ -231,7 +264,7 @@ const NewGroupModal = ({
             <textarea
               placeholder="Description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleDescriptionChange}
               className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 h-32 resize-none"
             />
           </div>
@@ -246,14 +279,14 @@ const NewGroupModal = ({
           </button>
           <button
             onClick={handleCreate}
-            disabled={!groupName?.trim()}
+            disabled={!groupName?.trim() || isCreatingGroup}
             className={`flex-1 px-4 py-2 rounded-lg ${
-              groupName?.trim()
+              groupName?.trim() && !isCreatingGroup
                 ? "bg-blue-500 text-white hover:bg-blue-600"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
-            Create
+            {isCreatingGroup ? "Creating..." : "Create"}
           </button>
         </div>
       </div>

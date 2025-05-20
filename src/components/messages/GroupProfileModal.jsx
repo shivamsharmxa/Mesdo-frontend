@@ -68,15 +68,6 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
   const [selectedToAdd, setSelectedToAdd] = useState([]);
   const [searchAddQuery, setSearchAddQuery] = useState("");
 
-  useEffect(() => {
-    if (isOpen) {
-      setIsAddMembersMode(false);
-      setSelectedToAdd([]);
-      setSearchQuery("");
-      setSearchAddQuery("");
-    }
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   const handleDeleteMember = (id) => {
@@ -87,6 +78,33 @@ const GroupProfileModal = ({ isOpen, onClose }) => {
   const filteredMembers = members.filter((member) =>
     member.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleCreate = () => {
+    if (!groupName?.trim()) return;
+    const newGroup = {
+      id: `group-${Date.now()}`,
+      name: groupName.trim(),
+      description: (description || "").trim(),
+      lastMessage: "Group created",
+      time: "Just now",
+      image: "/group-default.png",
+      isGroup: true,
+      members: selectedMembers,
+    };
+    onCreate(newGroup);
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+      onClose();
+      setTimeout(() => {
+        setStep(1);
+        setSelectedMembers([]);
+        setSearch("");
+        setGroupName("");
+        setDescription("");
+      }, 300); // Wait for modal to close before resetting state
+    }, 1500);
+  };
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50">

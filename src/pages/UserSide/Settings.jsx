@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TopNavigation from "../../components/messages/TopNavigation";
 import Sidebar from "../../components/messages/Sidebar";
 import { Search, ChevronDown, Info } from "lucide-react";
@@ -7,6 +7,12 @@ import Preferences from "../../components/settingstabs/ Preferences";
 import Appearance from "../../components/settingstabs/ Appearance";
 import Notification from "../../components/settingstabs/  Notification";
 import PropTypes from "prop-types";
+import {
+  getAccountSettings,
+  updateAccountSettings,
+  updateProfileImage,
+} from "../../services/settingsService";
+import { toast } from "react-hot-toast";
 
 const Tab = ({ label, isActive, onClick }) => (
   <button
@@ -71,6 +77,8 @@ const Settings = () => {
   const [profileImage, setProfileImage] = useState(
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef(null);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(countryList[1]); // Default to UK
@@ -83,28 +91,66 @@ const Settings = () => {
     "Appearance",
   ];
 
-  const handleSave = () => {
-    console.log("Saving changes:", formData);
+  useEffect(() => {
+    fetchAccountSettings();
+  }, []);
+
+  const fetchAccountSettings = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAccountSettings();
+      setFormData({
+        username: data.username,
+        phone: data.phone,
+        biography: data.biography,
+      });
+      setProfileImage(data.profileImage);
+      setSelectedCountry(
+        countryList.find((country) => country.code === data.countryCode) ||
+          countryList[1]
+      );
+    } catch (error) {
+      console.error("Error fetching account settings:", error);
+      toast.error("Failed to load account settings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await updateAccountSettings({
+        ...formData,
+        countryCode: selectedCountry.code,
+      });
+      toast.success("Settings saved successfully");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast.error("Failed to save settings");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
-    setFormData({
-      username: "X-AE-A-19",
-      phone: "+44 (158) 008-9987",
-      biography:
-        "Hi there! 👋 I'm X-AE-A-19, an AI enthusiast and fitness aficionado. When I'm not crunching numbers or optimizing algorithms, you can find me hitting the gym.",
-    });
-    setProfileImage(
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-    );
+    fetchAccountSettings();
   };
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-      console.log("File selected:", file);
+      try {
+        setIsLoading(true);
+        const data = await updateProfileImage(file);
+        setProfileImage(data.profileImage);
+        toast.success("Profile image updated successfully");
+      } catch (error) {
+        console.error("Error uploading profile image:", error);
+        toast.error("Failed to update profile image");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -113,16 +159,43 @@ const Settings = () => {
     event.stopPropagation();
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const file = event.dataTransfer.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-      console.log("File dropped:", file);
+      try {
+        setIsLoading(true);
+        const data = await updateProfileImage(file);
+        setProfileImage(data.profileImage);
+        toast.success("Profile image updated successfully");
+      } catch (error) {
+        console.error("Error uploading profile image:", error);
+        toast.error("Failed to update profile image");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-screen bg-gray-50">
+        <TopNavigation />
+        <div className="flex flex-1 overflow-hidden pt-16">
+          <Sidebar />
+          <div className="flex-1 ml-[300px] overflow-y-auto p-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+                <div className="h-64 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -174,20 +247,21 @@ const Settings = () => {
                       <div className="flex items-center space-x-3">
                         <button
                           onClick={handleCancel}
-                          className="px-3 py-1.5 text-sm rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 flex items-center"
+                          disabled={isSaving}
+                          className="px-3 py-1.5 text-sm rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 flex items-center disabled:opacity-50"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={handleSave}
-                          className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center"
+                          disabled={isSaving}
+                          className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center disabled:opacity-50"
                         >
-                          Save
+                          {isSaving ? "Saving..." : "Save"}
                         </button>
                       </div>
                     </div>
-                    <hr className="mb-6 border-gray-200" />{" "}
-                    {/* ← After Your Profile */}
+                    <hr className="mb-6 border-gray-200" />
                     <div className="space-y-6">
                       <div>
                         <label className="flex items-center text-sm font-bold text-gray-700">
@@ -205,8 +279,7 @@ const Settings = () => {
                           className="mt-1 ml-50 w-120 h-10 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
-                      <hr className="border-gray-200" />{" "}
-                      {/* ← After Username */}
+                      <hr className="border-gray-200" />
                       <div>
                         <label className="block text-sm font-bold text-gray-700">
                           Phone Number
@@ -265,13 +338,12 @@ const Settings = () => {
                           />
                         </div>
                       </div>
-                      <hr className="border-gray-200" />{" "}
-                      {/* ← After Phone Number */}
+                      <hr className="border-gray-200" />
                       <div>
                         <label className="block text-sm font-bold text-gray-700">
                           Profile Picture
                         </label>
-                        <div className="mt-1 flex items-center space-x-4 ">
+                        <div className="mt-1 flex items-center space-x-4">
                           <div className="h-16 w-16 rounded-full bg-gray-200 overflow-hidden ring-4 ring-gray-100">
                             <img
                               src={profileImage}
@@ -281,7 +353,7 @@ const Settings = () => {
                           </div>
                           <div className="flex-1 ml-50">
                             <div
-                              className="border-2 border-dashed h-35 w-120  border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors cursor-pointer"
+                              className="border-2 border-dashed h-35 w-120 border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors cursor-pointer"
                               onClick={() => fileInputRef.current?.click()}
                               onDragOver={handleDragOver}
                               onDrop={handleDrop}
@@ -303,8 +375,7 @@ const Settings = () => {
                           </div>
                         </div>
                       </div>
-                      <hr className="border-gray-200" />{" "}
-                      {/* ← After Profile Picture */}
+                      <hr className="border-gray-200" />
                       <div>
                         <label className="flex items-center text-sm font-bold text-gray-700">
                           Biography
@@ -325,7 +396,6 @@ const Settings = () => {
                     </div>
                   </div>
                 )}
-
                 {activeTab === "Privacy" && <Privacy />}
                 {activeTab === "Notification" && <Notification />}
                 {activeTab === "Preferences" && <Preferences />}

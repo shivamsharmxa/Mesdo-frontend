@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import {
+  getPrivacySettings,
+  updatePrivacySettings,
+} from "../../services/settingsService";
+import { toast } from "react-hot-toast";
 
 const dropdownOptions = {
   invitationsToConnect: [
@@ -16,6 +21,9 @@ const dropdownOptions = {
 };
 
 const Privacy = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
   // Dropdown states
   const [invitesConnect, setInvitesConnect] = useState(
     dropdownOptions.invitationsToConnect[0]
@@ -32,12 +40,59 @@ const Privacy = () => {
   const [readReceipts, setReadReceipts] = useState(true);
   const [harmfulDetection, setHarmfulDetection] = useState(true);
 
+  useEffect(() => {
+    fetchPrivacySettings();
+  }, []);
+
+  const fetchPrivacySettings = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getPrivacySettings();
+      setInvitesConnect(data.invitesConnect);
+      setInvitesFromNetwork(data.invitesFromNetwork);
+      setMessages(data.messages);
+      setShareProfile(data.shareProfile);
+      setSignalInterest(data.signalInterest);
+      setFocusedInbox(data.focusedInbox);
+      setReadReceipts(data.readReceipts);
+      setHarmfulDetection(data.harmfulDetection);
+    } catch (error) {
+      console.error("Error fetching privacy settings:", error);
+      toast.error("Failed to load privacy settings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await updatePrivacySettings({
+        invitesConnect,
+        invitesFromNetwork,
+        messages,
+        shareProfile,
+        signalInterest,
+        focusedInbox,
+        readReceipts,
+        harmfulDetection,
+      });
+      toast.success("Privacy settings saved successfully");
+    } catch (error) {
+      console.error("Error saving privacy settings:", error);
+      toast.error("Failed to save privacy settings");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Dropdown component
   const Dropdown = ({ value, setValue, options }) => (
     <select
       className="w-full md:w-[320px] border border-gray-100 rounded-xl px-4 py-2 bg-[#F8FAFC] text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm"
       value={value}
       onChange={(e) => setValue(e.target.value)}
+      disabled={isSaving}
     >
       {options.map((option) => (
         <option key={option} value={option} className="text-sm">
@@ -62,6 +117,7 @@ const Privacy = () => {
       }`}
       onClick={() => setEnabled(!enabled)}
       aria-pressed={enabled}
+      disabled={isSaving}
     >
       <span
         className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
@@ -76,15 +132,44 @@ const Privacy = () => {
     setEnabled: PropTypes.func.isRequired,
   };
 
+  if (isLoading) {
+    return (
+      <div className="bg-[#F7F9FB] min-h-screen py-8 px-2 md:px-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-md p-6 md:p-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#F7F9FB] min-h-screen py-8 px-2 md:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-md p-6 md:p-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-1">
-          Your Privacy Settings
-        </h2>
-        <p className="text-gray-400 mb-6 text-sm">
-          Please update your privacy settings preferences here
-        </p>
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">
+              Your Privacy Settings
+            </h2>
+            <p className="text-gray-400 mb-6 text-sm">
+              Please update your privacy settings preferences here
+            </p>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
 
         {/* Who can reach you */}
         <div className="mb-6">

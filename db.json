@@ -1,0 +1,64 @@
+{
+  "settings": {
+    "account": {
+      "username": "Shivam",
+      "phone": "643545465",
+      "biography": "Hi this is shivam",
+      "profileImage": "blob:http://localhost:5173/4e7987ef-7335-44d2-9009-7fe685f4a79d",
+      "countryCode": "+91"
+    },
+    "privacy": {
+      "invitesConnect": "Only people in my network",
+      "invitesFromNetwork": "Only from connections",
+      "messages": "Only from connections",
+      "shareProfile": false,
+      "signalInterest": true,
+      "focusedInbox": false,
+      "readReceipts": false,
+      "harmfulDetection": true
+    },
+    "notifications": {
+      "quietHours": false,
+      "fromTime": "22:00",
+      "toTime": "08:00",
+      "weekendOnly": true,
+      "notifications": {
+        "groupNotifications": true,
+        "emailNotifications": false,
+        "soundNotifications": true,
+        "jobPostNotifications": false,
+        "pageNotifications": true
+      }
+    },
+    "preferences": {
+      "language": "Spanish",
+      "profilePhotos": "Only connections",
+      "feedView": "Most recent posts",
+      "unfollowedPeople": [
+        {
+          "id": 1,
+          "name": "Dr. Rajeev Bhatia",
+          "avatar": "https://randomuser.me/api/portraits/men/1.jpg"
+        },
+        {
+          "id": 2,
+          "name": "Dr. Rajeev Bhatia",
+          "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+        },
+        {
+          "id": 3,
+          "name": "Dr. Rajeev Bhatia",
+          "avatar": "https://randomuser.me/api/portraits/men/3.jpg"
+        },
+        {
+          "id": 4,
+          "name": "Dr. Rajeev Bhatia",
+          "avatar": "https://randomuser.me/api/portraits/men/4.jpg"
+        }
+      ]
+    },
+    "appearance": {
+      "theme": "dark"
+    }
+  }
+}
