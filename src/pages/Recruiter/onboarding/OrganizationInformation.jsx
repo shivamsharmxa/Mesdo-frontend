@@ -1,90 +1,184 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const OrganizationInformation = () => {
+const OrganizationInformation = ({ updateFormData }) => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    website: "",
+    industry: "",
+    size: "",
+    type: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    updateFormData({ [name]: value });
+  };
+
+  const handleContinue = () => {
+    if (!form.name || !form.industry || !form.size || !form.type) {
+      setError("Please fill all required fields.");
+      return;
+    }
+    setError("");
+    navigate("/about");
+  };
+
+  const handleSkip = () => {
+    navigate("/about");
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="flex h-screen">
       {/* Left Side - Form */}
-      <div className="w-1/2 p-12">
-        <button className="mb-6">
-          <ArrowLeft size={24} className="text-black" />
+      <div
+        className="w-1/2 flex flex-col px-[100px] py-[60px] mt-[-20px]"
+        style={{ minWidth: 560 }}
+      >
+        <button className="mb-8 text-left" onClick={handleBack}>
+          <ArrowLeft size={28} className="text-black" />
         </button>
 
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="font-inter font-semibold text-[32px] leading-[130%] tracking-[0px] mb-1">
           Organization Information
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-[13px] font-sm text-[#8C8C8C] mb-8">
           Include all of your relevant experience and dates in this section.
         </p>
 
         {/* Form */}
-        <div className="mt-6 space-y-4">
+        <div className="flex-1 space-y-6">
           {/* Name */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
+            <label className="block text-[15px] text-gray-900 mb-1">
               Name*
             </label>
             <input
               type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
               placeholder="Enter name of your organization"
-              className="mt-1 block w-full h-11 rounded-md border border-gray-300 bg-gray-20 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 px-4 text-gray-700 text-[14px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
           {/* Website */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
+            <label className="block text-[15px] text-gray-900 mb-1">
               Website
             </label>
             <input
               type="text"
-              placeholder="link to your website"
-              className="mt-1 block w-full h-11 rounded-md border border-gray-300 bg-gray-20 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              placeholder="Link to your website"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 px-4 text-gray-700 text-[14px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
           {/* Industry */}
           <div>
-            <label className="block text-sm  font-small text-gray-900">
-              Industry
+            <label className="block text-[15px] text-gray-900 mb-1">
+              Industry*
             </label>
-            <input
-              type="text"
-              placeholder="Industry"
-              className="mt-1 block w-full h-11 rounded-md border border-gray-300 bg-gray-20 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-            />
+            <div className="relative">
+              <select
+                name="industry"
+                value={form.industry}
+                onChange={handleChange}
+                className="appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Industry</option>
+                <option value="technology">Technology</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="finance">Finance</option>
+                <option value="education">Education</option>
+                <option value="manufacturing">Manufacturing</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+            </div>
           </div>
 
+          {/* Organization Size */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
-              Organization Size
+            <label className="block text-[15px] text-gray-900 mb-1">
+              Organization Size*
             </label>
-            <input
-              type="text"
-              placeholder="Organization Size"
-              className="mt-1 block w-full h-11 rounded-md border border-gray-300 bg-gray-20 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-            />
+            <div className="relative">
+              <select
+                name="size"
+                value={form.size}
+                onChange={handleChange}
+                className="appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Size</option>
+                <option value="1-10">1-10 employees</option>
+                <option value="11-50">11-50 employees</option>
+                <option value="51-200">51-200 employees</option>
+                <option value="201-500">201-500 employees</option>
+                <option value="501+">501+ employees</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+            </div>
           </div>
 
+          {/* Organization Type */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
-              Organization Type
+            <label className="block text-[15px] text-gray-900 mb-1">
+              Organization Type*
             </label>
-            <input
-              type="text"
-              placeholder="Organization Type"
-              className="mt-1 block w-full h-11 rounded-md border border-gray-300 bg-gray-20 px-3 py-2 text-gray-700 text-sm focus:outline-none"
-            />
+            <div className="relative">
+              <select
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                className="appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Type</option>
+                <option value="private">Private Company</option>
+                <option value="public">Public Company</option>
+                <option value="nonprofit">Non-Profit</option>
+                <option value="government">Government</option>
+                <option value="startup">Startup</option>
+              </select>
+              <ChevronDown
+                size={20}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+            </div>
           </div>
         </div>
-
-        {/* Continue Button */}
-        <div className="mt-14 flex justify-between">
-          <button className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-200 transition">
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+        {/* Skip & Continue Buttons */}
+        <div className="flex justify-between mt-16">
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="w-[120px] h-[48px] bg-gray-100 text-[#1890FF] text-[15px] font-medium rounded-lg hover:bg-gray-200 transition-all"
+          >
             Skip
           </button>
           <button
-            onClick={""}
-            className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition"
+            type="button"
+            onClick={handleContinue}
+            className="w-[180px] h-[48px] bg-[#1890FF] text-white text-[17px] font-medium rounded-lg hover:bg-blue-600 transition-all shadow-none"
           >
             Continue
           </button>
@@ -92,9 +186,13 @@ const OrganizationInformation = () => {
       </div>
 
       {/* Right Side - Empty Space */}
-      <div className="w-1/2 bg-gray-100"></div>
+      <div className="w-1/2 bg-[#f8f8f8]" />
     </div>
   );
+};
+
+OrganizationInformation.propTypes = {
+  updateFormData: PropTypes.func.isRequired,
 };
 
 export default OrganizationInformation;

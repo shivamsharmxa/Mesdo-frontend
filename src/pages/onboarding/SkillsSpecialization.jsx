@@ -1,101 +1,129 @@
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Using Lucide for a clean back arrow icon
+import { useEffect, useState } from "react";
+import { ArrowLeft, X } from "lucide-react";
+import PropTypes from "prop-types";
 
-const SkillsSpecialization = () => {
-  const [skills, setSkills] = useState([]);
+const defaultSkillOptions = ["Communication", "Teamwork", "Critical Thinking"];
+
+const SkillsSpecialization = ({ updateFormData, onNext, onPrevious }) => {
+  const [formValues, setFormValues] = useState({
+    skills: [],
+  });
   const [skillInput, setSkillInput] = useState("");
-  const navigate = useNavigate();
 
-  const addSkill = (e) => {
+  // Optional: preload default skills on mount
+  useEffect(() => {
+    setFormValues({ skills: defaultSkillOptions });
+    updateFormData({ skills: defaultSkillOptions });
+  }, [updateFormData]);
+
+  const handleAddSkill = (e) => {
     if (e.key === "Enter" && skillInput.trim()) {
-      setSkills([...skills, skillInput.trim()]);
+      e.preventDefault();
+      const skill = skillInput.trim();
+      if (!formValues.skills.includes(skill)) {
+        const newSkills = [...formValues.skills, skill];
+        setFormValues({ ...formValues, skills: newSkills });
+        updateFormData({ skills: newSkills });
+      }
       setSkillInput("");
     }
   };
-  const handleSkip = () => {
-    navigate("/Interest"); // Navigate to the next page
-  };
-  const handleNext = () => {
-    navigate("/Interest"); // Navigate to the next page
-  };
-  const removeSkill = (index) => {
-    setSkills(skills.filter((_, i) => i !== index));
+
+  const handleRemoveSkill = (skillToRemove) => {
+    const newSkills = formValues.skills.filter(
+      (skill) => skill !== skillToRemove
+    );
+    setFormValues({ ...formValues, skills: newSkills });
+    updateFormData({ skills: newSkills });
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Left Side */}
-      <div className="w-1/2 flex flex-col justify-start pt-20 pr-120 px-20 relative">
-        {/* Back Button */}
-        <button className="absolute top-6 left-20 text-gray-600 hover:text-black">
-          <ArrowLeft size={24} />
-        </button>
+    <div className="flex h-screen">
+      {/* Left Form */}
+      <div
+        className="w-1/2 flex flex-col justify-between px-[100px] bg-white"
+        style={{ minWidth: 560 }}
+      >
+        <div className="pt-10">
+          <button className="mb-6" onClick={onPrevious}>
+            <ArrowLeft size={28} className="text-black" />
+          </button>
 
-        {/* Content */}
-        <div className="max-w-md mx-auto">
-          <h1 className="text-3xl font-bold">Skills & Specialization</h1>
-          <p className="text-gray-500 mb-6 text-sm">
+          <h1 className="text-[32px] font-semibold leading-[130%] mb-1">
+            Skills or Specialization
+          </h1>
+          <p className="text-sm text-gray-500 mb-6">
             Include all of your relevant experience and dates in this section.
           </p>
 
-          {/* Skills Input */}
-          <label className="block text-gray-700 font-small mb-2">Skills</label>
-          <input
-            type="text"
-            placeholder="Select"
-            value={skillInput}
-            onChange={(e) => setSkillInput(e.target.value)}
-            onKeyDown={addSkill}
-            className="w-150 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-3"
-          />
+          {/* Input Field */}
+          <div>
+            <label
+              className="block font-sm mb-1"
+              style={{ fontSize: "1.1rem" }}
+            >
+              Skills
+            </label>
 
-          {/* Skills List */}
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill, index) => (
-              <div
-                key={index}
-                className="bg-gray-200 px-3 py-1 rounded-full flex items-center text-sm"
-              >
-                {skill}
-                <button
-                  onClick={() => removeSkill(index)}
-                  className="ml-2 text-gray-600 hover:text-gray-900"
+            <input
+              type="text"
+              placeholder="Select"
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+              onKeyDown={handleAddSkill}
+              className="w-full h-[50px] border border-gray-200 rounded-lg px-4 text-sm placeholder-gray-400 focus:outline-none"
+            />
+
+            {/* Skill Chips */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {formValues.skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="px-3 h-[44px] py-1.5 rounded-md border border-[#DCDCDC] flex items-center text-sm"
                 >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Specialization Input */}
-
-          {/* Buttons */}
-          <div className="mt-60 flex w-full">
-            <div className="flex-1">
-              <button
-                onClick={handleSkip}
-                className="w-[120px] h-[40px] bg-[#F0F0F0] text-[#1890FF] text-sm font-small rounded-md hover:bg-gray-400 transition"
-              >
-                Skip All
-              </button>
-            </div>
-            <div className="flex-1 flex justify-end ml-80">
-              <button
-                onClick={handleNext}
-                className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-small rounded-md hover:bg-blue-600 transition"
-              >
-                Continue
-              </button>
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSkill(skill)}
+                    className="ml-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Bottom Buttons */}
+        <div className="flex justify-between pt-4 mb-10">
+          <button
+            type="button"
+            onClick={onPrevious}
+            className="w-[120px] h-[48px] bg-gray-100 text-[#1890FF] text-[15px] font-medium rounded-lg hover:bg-gray-200 transition-all"
+          >
+            Skip All
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            className="w-[180px] h-[48px] bg-[#1890FF] text-white text-[17px] font-medium rounded-lg hover:bg-blue-600 transition-all shadow-none"
+          >
+            Next
+          </button>
+        </div>
       </div>
 
-      {/* Right Side (Empty) */}
-      <div className="w-1/2 h-screen bg-gray-100"></div>
+      {/* Right - Empty Side */}
+      <div className="w-1/2 bg-[#f8f8f8]" />
     </div>
   );
+};
+
+SkillsSpecialization.defaultProps = {
+  updateFormData: () => {},
+  onNext: () => {},
+  onPrevious: () => {},
 };
 
 export default SkillsSpecialization;

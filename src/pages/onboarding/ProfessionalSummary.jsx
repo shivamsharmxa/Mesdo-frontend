@@ -1,147 +1,155 @@
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-import { useState } from "react";
-import { User } from "lucide-react";
 
-const ProfessionalSummary = () => {
-  const navigate = useNavigate();
-  const [value, setValue] = useState("");
-  const [completedSteps, setCompletedSteps] = useState(1); // Start with 1 step completed
+const ProfessionalSummary = ({ updateFormData, onPrevious, onNext }) => {
+  const [formValues, setFormValues] = useState({
+    tagline: "",
+    aboutYou: "",
+  });
 
   // ReactQuill Modules
   const modules = {
     toolbar: [
-      [{ header: [1, 2, false] }],
       ["bold", "italic", "underline", "strike"],
+      ["blockquote", "code-block"],
       [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["link", "image"],
+      ["link"],
       ["clean"],
+      [{ align: [] }],
+      ["undo", "redo"],
     ],
   };
 
-  // Handle Continue button click
-  const handleContinue = () => {
-    if (completedSteps < 5) {
-      setCompletedSteps(completedSteps + 1); // Increment steps
-    }
-    navigate("/Qualification"); // Navigate to the next page
+  const handleTaglineChange = (e) => {
+    const { value } = e.target;
+    setFormValues((prev) => ({ ...prev, tagline: value }));
+    updateFormData({ tagline: value });
   };
-  const handleSkip = () => {
-    navigate("/Interest"); // Navigate to the next page
+
+  const handleAboutYouChange = (value) => {
+    setFormValues((prev) => ({ ...prev, aboutYou: value }));
+    updateFormData({ aboutYou: value });
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen ">
       {/* Left Side - Form */}
-      <div className="w-1/2 p-12">
-        <button
-          className="mb-6"
-          onClick={() => navigate("/personalInformation")}
-        >
-          <ArrowLeft size={24} className="text-black" />
+      <div
+        className="w-1/2 flex flex-col justify-center px-[100px] "
+        style={{ minWidth: 560 }}
+      >
+        <button className="mb-8 mt-2 text-left" onClick={onPrevious}>
+          <ArrowLeft size={28} className="text-black" />
         </button>
 
-        {/* Title with Progress Circle */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-gray-900">
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="font-inter font-semibold text-[32px] leading-[130%] tracking-[0px]">
             Professional Summary
           </h1>
-
-          {/* Progress Indicator */}
-          <div className="relative w-12 h-12">
-            <svg className="w-full h-full" viewBox="0 0 36 36">
-              {/* Background Circle (Dashed) */}
+          {/* Progress Circle */}
+          <div className="relative w-12 h-12 flex items-center justify-center mt-[-24px]">
+            <svg width="48" height="48" viewBox="0 0 48 48">
               <circle
-                cx="18"
-                cy="18"
-                r="16"
+                cx="24"
+                cy="24"
+                r="20"
                 fill="none"
-                stroke="#E5E7EB"
+                stroke="#D9D9D9"
                 strokeWidth="3"
-                strokeDasharray="28,4" // Smaller gaps (28px stroke, 4px gap)
-                strokeLinecap="round"
+                strokeDasharray="6 6"
               />
-
-              {/* Progress Circle - Filling Step-by-Step */}
+              {/* Progress arc: adjust strokeDasharray and strokeDashoffset for progress */}
               <circle
-                cx="18"
-                cy="18"
-                r="16"
+                cx="24"
+                cy="24"
+                r="20"
                 fill="none"
-                stroke="#3B82F6"
+                stroke="#1890FF"
                 strokeWidth="3"
-                strokeDasharray="28,4" // Same as background
-                strokeDashoffset={100 - completedSteps * 20} // 5 steps (100 / 5 = 20 per step)
+                strokeDasharray="25 100"
+                strokeDashoffset="0"
                 strokeLinecap="round"
-                style={{ transition: "stroke-dashoffset 0.5s ease" }}
+                transform="rotate(-90 24 24)"
               />
             </svg>
-
-            {/* Profile Icon in Center */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <User size={18} className="text-gray-700" />
-            </div>
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-[13px] font-sm text-[#8C8C8C] mb-8">
           Include all of your relevant experience and dates in this section.
         </p>
 
         {/* Form */}
-        <div className="mt-6 space-y-4">
+        <form className="space-y-6">
           {/* Tagline */}
           <div>
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-[15px] text-gray-900 mb-1">
               Tagline
             </label>
             <input
               type="text"
-              placeholder="Enter tagline"
-              className="mt-1 block w-full rounded-md border h-12 border-gray-300 bg-white px-3 py-2 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formValues.tagline}
+              onChange={handleTaglineChange}
+              placeholder="Enter Tagline"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 bg-gray-50 px-4 text-gray-700 text-[14px] font-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
           {/* About You */}
           <div>
-            <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-[15px] text-gray-900 mb-1">
               About You
             </label>
-            <ReactQuill
-              theme="snow"
-              value={value}
-              onChange={setValue}
-              modules={modules}
-              placeholder="Write about yourself..."
-              className="mt-2 bg-white border border-gray-300 rounded-md h-60 text-gray-700"
-            />
+            <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+              <ReactQuill
+                theme="snow"
+                value={formValues.aboutYou}
+                onChange={handleAboutYouChange}
+                modules={modules}
+                placeholder="About You"
+                className="h-[200px] text-[14px] font-sm border-none"
+                style={{
+                  border: "none",
+                  minHeight: 308,
+                  fontFamily: "Inter, sans-serif",
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Buttons */}
-        <div className="mt-40 flex justify-between">
-          <button
-            onClick={handleSkip}
-            className="w-[120px] h-[40px] bg-gray-200 text-blue-500 text-sm font-medium rounded-md hover:bg-gray-300 transition"
-          >
-            Skip All
-          </button>
-          <button
-            onClick={handleContinue}
-            className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition"
-          >
-            Continue
-          </button>
-        </div>
+          {/* Buttons */}
+          <div className="flex justify-between pt-8 mt-8">
+            <button
+              type="button"
+              onClick={onPrevious}
+              className="w-[120px] h-[48px] bg-gray-100 text-[#1890FF] text-[16px] font-medium rounded-lg hover:bg-gray-200 transition-all"
+            >
+              Skip All
+            </button>
+            <button
+              type="button"
+              onClick={onNext}
+              className="w-[180px] h-[48px] bg-[#1890FF] text-white text-[17px] font-medium rounded-lg hover:bg-blue-600 transition-all shadow-none"
+            >
+              Next
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Right Side - Empty Space */}
-      <div className="w-1/2 bg-gray-100"></div>
+      <div className="w-1/2 bg-[#f8f8f8]" />
     </div>
   );
+};
+
+ProfessionalSummary.propTypes = {
+  updateFormData: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrevious: PropTypes.func.isRequired,
 };
 
 export default ProfessionalSummary;

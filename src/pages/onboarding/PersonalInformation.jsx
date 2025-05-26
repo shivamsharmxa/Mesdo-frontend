@@ -1,181 +1,267 @@
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../lib/axiosInstance";
+import PropTypes from "prop-types";
 
-const states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-];
+const PersonalInformation = ({ updateFormData, onNext, onPrevious }) => {
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [formValues, setFormValues] = useState({
+    name: "",
+    email: "akhil.sharma@gmail.com", // Pre-filled and disabled
+    phoneNo: "",
+    gender: "",
+    dob: "",
+    state: "",
+    city: "",
+  });
 
-const PersonalInformation = () => {
-  const navigate = useNavigate();
+  useEffect(() => {
+    const getStates = async () => {
+      try {
+        const response = await axiosInstance.get("onboarding/states");
+        setStates(response.data);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      }
+    };
+    getStates();
+  }, []);
+
+  useEffect(() => {
+    const getCities = async () => {
+      if (selectedState) {
+        try {
+          const response = await axiosInstance.get(
+            `onboarding/${selectedState}/cities`
+          );
+          setCities(response.data);
+        } catch (error) {
+          console.error("Error fetching cities:", error);
+        }
+      } else {
+        setCities([]);
+      }
+    };
+    getCities();
+  }, [selectedState]);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [id]: value }));
+    updateFormData({ [id]: value });
+  };
+
+  const handleStateChange = (e) => {
+    const { value } = e.target;
+    setSelectedState(value);
+    setFormValues((prev) => ({ ...prev, state: value, city: "" }));
+    updateFormData({ state: value, city: "" });
+  };
+
   return (
     <div className="flex h-screen">
       {/* Left Side - Form */}
-      <div className="w-1/2 p-12">
-        <button className="mb-6">
-          <ArrowLeft size={24} className="text-black" />
+      <div
+        className="w-1/2 flex flex-col justify-center px-[100px]"
+        style={{ minWidth: 560 }}
+      >
+        <button className="mb-8 mt-2 text-left" onClick={onPrevious}>
+          <ArrowLeft size={28} className="text-black" />
         </button>
 
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="font-inter font-semibold text-[32px] leading-[130%] tracking-[0px]">
           Personal Information
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-[13px] font-sm text-[#8C8C8C] mb-8">
           Include all of your relevant experience and dates in this section.
         </p>
 
         {/* Form */}
-        <div className="mt-6 space-y-4">
+        <form className="space-y-6">
           {/* Name */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
+            <label
+              htmlFor="name"
+              className="block text-[15px] text-gray-900 mb-1"
+            >
               Name*
             </label>
             <input
               type="text"
+              id="name"
+              value={formValues.name}
+              onChange={handleChange}
               placeholder="Akhil Sharma"
-              className="mt-1 block w-full rounded-md h-12 border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 bg-gray-50 px-4 text-gray-700 text-[14px] font-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-[15px] text-gray-900 mb-1"
+            >
               Email*
             </label>
             <input
               type="email"
+              id="email"
+              value={formValues.email}
+              disabled
               placeholder="akhil.sharma@gmail.com"
-              className="mt-1 block w-full rounded-md border h-12 border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 bg-gray-50 px-4 text-gray-700 text-[14px] font-normal placeholder-gray-400 cursor-not-allowed"
             />
           </div>
 
           {/* Phone Number */}
           <div>
-            <label className="block text-sm font-small text-gray-900">
+            <label
+              htmlFor="phoneNo"
+              className="block text-[15px] text-gray-900 mb-1"
+            >
               Phone Number*
             </label>
             <input
               type="text"
+              id="phoneNo"
+              value={formValues.phoneNo}
+              onChange={handleChange}
               placeholder="921XXXX123"
-              className="mt-1 block w-full rounded-md border h-12 border-gray-300 bg-gray-50 px-3 py-2 text-gray-700 text-sm focus:outline-none"
+              className="block w-full h-[48px] rounded-lg border border-gray-200 bg-gray-50 px-4 text-gray-700 text-[14px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
           {/* Gender & DOB */}
-          <div className="flex gap-4">
+          <div className="flex gap-6">
             <div className="w-1/2">
-              <label className="block text-sm font-small text-gray-900">
+              <label
+                htmlFor="gender"
+                className="block text-[15px] text-gray-900 mb-1"
+              >
                 Gender*
               </label>
-              <div className="relative mt-1">
-                <select className="appearance-none block w-full  h-12 rounded-md border border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
-                  <option>Select</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
+              <div className="relative">
+                <select
+                  id="gender"
+                  value={formValues.gender}
+                  onChange={handleChange}
+                  className="appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
                 <ChevronDown
-                  size={18}
-                  className="absolute right-3 top-3 text-gray-400"
+                  size={20}
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
               </div>
             </div>
-
             <div className="w-1/2">
-              <label className="block text-sm font-small  text-gray-900">
+              <label
+                htmlFor="dob"
+                className="block text-[15px] text-gray-900 mb-1"
+              >
                 DOB*
               </label>
-              <div className="relative mt-1">
-                <input
-                  type="date"
-                  className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none"
-                />
-              </div>
+              <input
+                type="date"
+                id="dob"
+                value={formValues.dob}
+                onChange={handleChange}
+                className="block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
           </div>
 
           {/* State & City */}
-          <div className="flex gap-4">
+          <div className="flex gap-6">
             <div className="w-1/2">
-              <label className="block text-sm font-small  text-gray-900">
+              <label
+                htmlFor="state"
+                className="block text-[15px] text-gray-900 mb-1"
+              >
                 State
               </label>
-              <div className="relative mt-1">
-                <select className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
-                  <option>Select</option>
-                  {states.map((state, index) => (
-                    <option key={index}>{state}</option>
+              <div className="relative">
+                <select
+                  id="state"
+                  value={selectedState}
+                  onChange={handleStateChange}
+                  className="appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select</option>
+                  {states.map((state) => (
+                    <option key={state.isoCode} value={state.isoCode}>
+                      {state.name}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown
-                  size={18}
-                  className="absolute right-3 top-3 text-gray-400"
+                  size={20}
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
               </div>
             </div>
-
             <div className="w-1/2">
-              <label className="block text-sm font-small  text-gray-900">
+              <label
+                htmlFor="city"
+                className="block text-[15px] text-gray-900 mb-1"
+              >
                 City
               </label>
-              <div className="relative mt-1">
-                <select className="appearance-none block w-full rounded-md border h-12 border-gray-300 px-3 py-2 text-[#8C8C8C] text-sm focus:outline-none">
-                  <option>Select</option>
-                  <option>New Delhi</option>
-                  <option>Mumbai</option>
-                  <option>Bangalore</option>
-                  <option>Hyderabad</option>
+              <div className="relative">
+                <select
+                  id="city"
+                  value={formValues.city}
+                  onChange={handleChange}
+                  disabled={!selectedState}
+                  className={`appearance-none block w-full h-[48px] rounded-lg border border-gray-200 bg-white px-4 text-[#8C8C8C] text-[13px] font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !selectedState ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <option value="">Select</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown
-                  size={18}
-                  className="absolute right-3 top-3 text-gray-400"
+                  size={20}
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Continue Button */}
-        <div className="mt-15 pl-130 ">
-          <button
-            onClick={() => navigate("/professionalSummary")}
-            className="w-[120px] h-[40px] bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition"
-          >
-            Next
-          </button>
-        </div>
+          {/* Next Button */}
+          <div className="flex justify-end pt-4">
+            <button
+              type="button"
+              onClick={onNext}
+              className="w-[180px] h-[48px] bg-[#1890FF] text-white text-[17px] font-medium rounded-lg hover:bg-blue-600 transition-all shadow-none"
+            >
+              Next
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Right Side - Empty Space */}
-      <div className="w-1/2 bg-gray-100"></div>
+      <div className="w-1/2 bg-[#f8f8f8]" />
     </div>
   );
+};
+
+PersonalInformation.propTypes = {
+  updateFormData: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrevious: PropTypes.func.isRequired,
 };
 
 export default PersonalInformation;
