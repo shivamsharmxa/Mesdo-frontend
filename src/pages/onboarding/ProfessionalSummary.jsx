@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
+import StepProgressCircle from "../../components/StepProgressCircle";
 
 const ProfessionalSummary = ({ updateFormData, onPrevious, onNext }) => {
   const [formValues, setFormValues] = useState({
@@ -50,32 +51,7 @@ const ProfessionalSummary = ({ updateFormData, onPrevious, onNext }) => {
             Professional Summary
           </h1>
           {/* Progress Circle */}
-          <div className="relative w-12 h-12 flex items-center justify-center mt-[-24px]">
-            <svg width="48" height="48" viewBox="0 0 48 48">
-              <circle
-                cx="24"
-                cy="24"
-                r="20"
-                fill="none"
-                stroke="#D9D9D9"
-                strokeWidth="3"
-                strokeDasharray="6 6"
-              />
-              {/* Progress arc: adjust strokeDasharray and strokeDashoffset for progress */}
-              <circle
-                cx="24"
-                cy="24"
-                r="20"
-                fill="none"
-                stroke="#1890FF"
-                strokeWidth="3"
-                strokeDasharray="25 100"
-                strokeDashoffset="0"
-                strokeLinecap="round"
-                transform="rotate(-90 24 24)"
-              />
-            </svg>
-          </div>
+          <StepProgressCircle currentStep={0} totalSteps={5} />
         </div>
 
         <p className="text-[13px] font-sm text-[#8C8C8C] mb-8">

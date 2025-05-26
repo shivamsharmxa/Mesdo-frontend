@@ -4,6 +4,7 @@ import Select from "react-select";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PropTypes from "prop-types";
+import StepProgressCircle from "../../components/StepProgressCircle";
 
 const Qualification = ({ updateFormData, onNext, onPrevious }) => {
   const [universities, setUniversities] = useState([]);
@@ -144,9 +145,12 @@ const Qualification = ({ updateFormData, onNext, onPrevious }) => {
           <button className="mb-8 mt-2 text-left" onClick={onPrevious}>
             <ArrowLeft size={28} className="text-black" />
           </button>
-          <h1 className="font-inter font-semibold text-[32px] leading-[130%] tracking-[0px] mb-1">
-            Qualifications
-          </h1>
+          <div className="flex items-center justify-between mb-1">
+            <h1 className="font-inter font-semibold text-[32px] leading-[130%] tracking-[0px] mb-1">
+              Qualifications
+            </h1>
+            <StepProgressCircle currentStep={1} totalSteps={5} />
+          </div>
           <p className="text-[13px] font-sm text-[#8C8C8C] mb-8">
             Include all of your qualification in this section.
           </p>

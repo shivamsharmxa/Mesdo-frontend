@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
 import PropTypes from "prop-types";
+import StepProgressCircle from "../../components/StepProgressCircle";
 
 const defaultSkillOptions = ["Communication", "Teamwork", "Critical Thinking"];
 
@@ -49,9 +50,12 @@ const SkillsSpecialization = ({ updateFormData, onNext, onPrevious }) => {
             <ArrowLeft size={28} className="text-black" />
           </button>
 
-          <h1 className="text-[32px] font-semibold leading-[130%] mb-1">
-            Skills or Specialization
-          </h1>
+          <div className="flex items-center justify-between mb-1">
+            <h1 className="text-[32px] font-semibold leading-[130%] mb-1">
+              Skills or Specialization
+            </h1>
+            <StepProgressCircle currentStep={3} totalSteps={5} />
+          </div>
           <p className="text-sm text-gray-500 mb-6">
             Include all of your relevant experience and dates in this section.
           </p>
